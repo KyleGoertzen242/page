@@ -4,10 +4,6 @@
     <meta charset="UTF-8">
     <title>Python Code Display</title>
     <style>
-        .span_color {
-            color: yellow;
-            background-color: orange;
-        }
         body {
             background-color: #121212;
             color: #d4d4d4;
@@ -62,6 +58,23 @@
             margin-top: 10px;
             font-size: 14px;
         }
+
+        .colort {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .colort span {
+            display: inline-block;
+            background-color: #3a8fd1;
+            color: yellow;
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-family: Arial, sans-serif;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -75,9 +88,11 @@
     </form>
 </div>
 
-<span id="span_color">
-    💰$500
-</span>
+<div class="colort">
+    <span>
+        💰$500
+    </span>    
+</div>
 
 <pre><code>#===================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
 #Study-Only License
@@ -239,6 +254,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
