@@ -78,36 +78,53 @@
     </form>
 </div>
 
-  <h2>Buy: Premium E-Book</h2>
-  <p>Price: $250.00 USD</p>
+    <h2>Buy: Premium E-Book</h2>
+    <p>Price: $250.00 CAD</p>
 
-  <!-- PayPal button will render here -->
-  <div id="paypal-button-container"></div>
+    <div id="paypal-button-container"></div>
 
-  <!-- Load PayPal SDK -->
-  <script src="https://www.paypal.com/sdk/js?client-id=ASdTzyCfpDnc0IQKpOEot028hcT9gu3bimChWl1-j6V9v5iuFn3Q5I4XvIs3CMdqLcmabMzAke1dTiZ4&currency=CAD&components=buttons,hosted-fields"></script>
+    <!-- Load PayPal SDK with card support -->
+    <script src="https://www.paypal.com/sdk/js?client-id=ASdTzyCfpDnc0IQKpOEot028hcT9gu3bimChWl1-j6V9v5iuFn3Q5I4XvIs3CMdqLcmabMzAke1dTiZ4&currency=CAD&components=buttons"></script>
 
-  <script>
-    paypal.Buttons({
-      createOrder: function(data, actions) {
-        return actions.order.create({
-          purchase_units: [{
-            description: "Premium E-Book",  // Custom product name
-            amount: {
-              value: '250.00'  // Fixed this line
-            }
-          }]
-        });
-      },
+    <script>
+      paypal.Buttons({
+        style: {
+          layout: 'vertical',
+          color:  'gold',
+          shape:  'rect',
+          label:  'paypal'
+        },
 
-      onApprove: function(data, actions) {
-        return actions.order.capture().then(function(details) {
-          alert('Payment completed by ' + details.payer.name.given_name + '!');
-          window.location.href = "https://kylegoertzen242.github.io/page/";
-        });
-      }
-    }).render('#paypal-button-container'); // Render PayPal button
-  </script>
+        // Create the order
+        createOrder: function(data, actions) {
+          return actions.order.create({
+            purchase_units: [{
+              description: "Premium E-Book",
+              amount: {
+                currency_code: "CAD",
+                value: '250.00'
+              }
+            }]
+          });
+        },
+
+        // Capture the order on approval
+        onApprove: function(data, actions) {
+          return actions.order.capture().then(function(details) {
+            alert('Payment completed by ' + details.payer.name.given_name + '!');
+            // Redirect after payment success
+            window.location.href = "https://kylegoertzen242.github.io/page/";
+          });
+        },
+
+        // Handle any errors
+        onError: function(err) {
+          console.error(err);
+          alert('An error occurred during the transaction.');
+        }
+      }).render('#paypal-button-container');
+    </script>
+
 
 <div class="colort">
     <span>
@@ -276,6 +293,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
