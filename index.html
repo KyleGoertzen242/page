@@ -78,6 +78,37 @@
     </form>
 </div>
 
+  <h2>Buy: Premium E-Book</h2>
+  <p>Price: $250.00 USD</p>
+
+  <!-- PayPal button will render here -->
+  <div id="paypal-button-container"></div>
+
+  <!-- Load PayPal SDK -->
+  <script src="https://www.paypal.com/sdk/js?client-id=ASdTzyCfpDnc0IQKpOEot028hcT9gu3bimChWl1-j6V9v5iuFn3Q5I4XvIs3CMdqLcmabMzAke1dTiZ4&currency=CAD&components=buttons,hosted-fields"></script>
+
+  <script>
+    paypal.Buttons({
+      createOrder: function(data, actions) {
+        return actions.order.create({
+          purchase_units: [{
+            description: "Premium E-Book",  // Custom product name
+            amount: {
+              value: '250.00'  // Fixed this line
+            }
+          }]
+        });
+      },
+
+      onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+          alert('Payment completed by ' + details.payer.name.given_name + '!');
+          window.location.href = "https://kylegoertzen242.github.io/page/";
+        });
+      }
+    }).render('#paypal-button-container'); // Render PayPal button
+  </script>
+
 <div class="colort">
     <span>
         <br>
@@ -245,6 +276,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
