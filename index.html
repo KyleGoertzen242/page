@@ -79,7 +79,7 @@
 </div>
 
     <h2>Buy: Premium E-Book</h2>
-    <p>Price: $250.00 CAD</p>
+    <p>Price: $5.00 CAD</p>
 
     <div id="paypal-button-container"></div>
 
@@ -99,10 +99,10 @@
         createOrder: function(data, actions) {
           return actions.order.create({
             purchase_units: [{
-              description: "Premium E-Book",
+              description: "Book",
               amount: {
                 currency_code: "CAD",
-                value: '250.00'
+                value: '5.00'
               }
             }]
           });
@@ -293,6 +293,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
