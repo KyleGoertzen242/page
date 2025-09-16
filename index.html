@@ -95,10 +95,9 @@
     },
 
     createOrder: function(data, actions) {
-      console.log("Creating order...");
       return actions.order.create({
         purchase_units: [{
-          description: "The Hobbit Graphic Novel - Bookingham Palace Bookstore",
+          description: "The Hobbit Graphic Novel",
           amount: {
             currency_code: "CAD",
             value: '20.00'
@@ -291,6 +290,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
