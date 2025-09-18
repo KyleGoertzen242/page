@@ -23,10 +23,10 @@
             word-wrap: break-word;
         }
 
-        .ad-container {
+        #ad-container {
         }
 
-        .ad-container img {
+        #ad-container img {
             top: 50%;
             left: 50%;
             width: 278px;  /* fixed size */
@@ -36,7 +36,7 @@
             transition: opacity 0.2s ease-in-out;
         }
         
-        .ad-container img.active {
+        #ad-container img.active {
             opacity: 1;
             z-index: 1;
         }
@@ -87,14 +87,14 @@
 </head>
 <body>
 
-<div class="ad-container">
+<div id="ad-container">
     <img src="image1.png" class="active" alt="Ad 1">
     <img src="image2.png" alt="Ad 2">
     <img src="image3.png" alt="Ad 3">
 </div>
 
 <script>
-    const images = document.querySelectorAll('.ad-container img');
+    const images = document.querySelectorAll('#ad-container img');
     let current = 0;
     
     setInterval(() => {
@@ -328,6 +328,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
