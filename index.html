@@ -24,6 +24,7 @@
         }
 
         #ad-container {
+            position-left: 100px;
         }
 
         #ad-container img {
@@ -104,16 +105,7 @@
     }, 1000);
 </script>
 
-<div class="email-form">
-    <form id="emailForm" method="POST" action="https://formspree.io/f/mandazgg">
-        <label for="email">Enter your email to get 50 percent off purchase:</label><br>
-        <input type="email" id="email" name="email" placeholder="you@example.com" required>
-        <input type="submit" value="Submit">
-        <div class="message" id="message"></div>
-    </form>
-</div>
-
-<h2>Buy: Premium E-Book</h2>
+    <h2>Buy: Premium E-Book</h2>
 <p>Price: $20.00 CAD</p>
 
 <div id="paypal-button-container">
@@ -159,6 +151,15 @@
     }).render('#paypal-button-container');
 <script>
 
+<div class="email-form">
+    <form id="emailForm" method="POST" action="https://formspree.io/f/mandazgg">
+        <label for="email">Enter your email to get 50 percent off purchase:</label><br>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required>
+        <input type="submit" value="Submit">
+        <div class="message" id="message"></div>
+    </form>
+</div>
+
 <div class="colort">
     <span>
         <br>
@@ -166,8 +167,7 @@
     </span>    
 </div>
 
-<pre>
-    <code>#===================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+<pre><code>#===================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================
 #Study-Only License
 #
 #Copyright (c) 2024 KyleGoertzen242
@@ -312,8 +312,7 @@ def main():
 
 if __name__ == "__main__":
     main()
-    </code>
-</pre>
+</code></pre>
 
 <script>
     document.getElementById("emailForm").addEventListener("submit", function (e) {
@@ -328,6 +327,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
