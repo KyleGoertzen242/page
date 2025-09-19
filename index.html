@@ -145,14 +145,16 @@
 <br>
 
 <script>
-    const images = document.querySelectorAll('#second-ad-container img');
-    let current = 0;
+    (function() {
+        const images = document.querySelectorAll('#second-ad-container img');
+        let current = 0;
     
-    setInterval(() => {
-      images[current].classList.remove('secondactive');
-      current = (current + 1) % images.length;
-      images[current].classList.add('secondactive');
-    }, 1000);
+        setInterval(() => {
+            images[current].classList.remove('secondactive');
+            current = (current + 1) % images.length;
+            images[current].classList.add('secondactive');
+        }, 1000);
+    })();
 </script>
 
 <a href="https://www.instagram.com/rain_dance_420/" target="_blank" style="text-decoration: none; color: #E1306C; font-weight: bold; font-family: Arial, sans-serif;">
@@ -343,6 +345,7 @@ if __name__ == "__main__":
 </code></pre>
 </body>
 </html>
+
 
 
 
