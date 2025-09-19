@@ -55,54 +55,53 @@
             background-color: #2978b5;
         }
 
-#ad-container {
-    position: relative;    /* make this the reference for absolute images */
-    width: 278px;          /* width of your images */
-    height: 300px;         /* height of your images */
-    margin-left: 1000px;    /* if you want to shift container right */
-}
-
-#ad-container img {
-    position: absolute;
-    top: 50%;              /* center vertically */
-    left: 50%;             /* center horizontally */
-    height: 300px;
-    width: 278px;
-    transform: translate(-50%, -50%); /* center transform */
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
-}
-
-#ad-container img.active {
-    opacity: 1;
-    z-index: 1;
-}
-
-#ad-container1 {
-    position: relative;    /* make this the reference for absolute images */
-    width: 278px;          /* width of your images */
-    height: 300px;         /* height of your images */
-    margin-left: 1000px;    /* if you want to shift container right */
-    margin-top: 500px;
-}
-
-#ad-container1 img {
-    position: absolute;
-    top: 50%;              /* center vertically */
-    left: 50%;             /* center horizontally */
-    height: 300px;
-    width: 278px;
-    transform: translate(-50%, -50%); /* center transform */
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
-}
-
-#ad-container1 img.active {
-    opacity: 1;
-    z-index: 1;
-}
-
-
+        #ad-container {
+            position: relative;    /* make this the reference for absolute images */
+            width: 278px;          /* width of your images */
+            height: 300px;         /* height of your images */
+            margin-left: 1000px;    /* if you want to shift container right */
+        }
+        
+        #ad-container img {
+            position: absolute;
+            top: 50%;              /* center vertically */
+            left: 50%;             /* center horizontally */
+            height: 300px;
+            width: 278px;
+            transform: translate(-50%, -50%); /* center transform */
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        
+        #ad-container img.active {
+            opacity: 1;
+            z-index: 1;
+        }
+        
+        #ad-container1 {
+            position: relative;    /* make this the reference for absolute images */
+            width: 480px;          /* width of your images */
+            height: 640px;         /* height of your images */
+            margin-left: 1000px;    /* if you want to shift container right */
+            margin-top: 300px;
+        }
+        
+        #ad-container1 img {
+            position: absolute;
+            top: 50%;              /* center vertically */
+            left: 50%;             /* center horizontally */
+            height: 480px;
+            width: 640px;
+            transform: translate(-50%, -50%); /* center transform */
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        
+        #ad-container1 img.active1 {
+            opacity: 1;
+            z-index: 1;
+        }
+        
         .message {
             margin-top: 10px;
             font-size: 14px;
@@ -118,7 +117,7 @@
 <body>
 
 <div id="ad-container">
-    <img src="image1.png" class="active" alt="Ad 1">
+    <img src="image1.png" class="active1" alt="Ad 1">
     <img src="image2.png" alt="Ad 2">
     <img src="image3.png" alt="Ad 3">
 </div>
@@ -130,9 +129,9 @@
     let current = 0;
     
     setInterval(() => {
-      images[current].classList.remove('active');
+      images[current].classList.remove('active1');
       current = (current + 1) % images.length;
-      images[current].classList.add('active');
+      images[current].classList.add('active1');
     }, 1000);
 </script>
 
@@ -344,6 +343,7 @@ if __name__ == "__main__":
 </code></pre>
 </body>
 </html>
+
 
 
 
