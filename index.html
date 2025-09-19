@@ -139,13 +139,13 @@
 </div>
     
 <script>
-    const images = document.querySelectorAll('#second-ad-container img');
-    let current = 0;
+    const secondimages = document.querySelectorAll('#second-ad-container img');
+    let secondcurrent = 0;
 
     setInterval(() => {
-        images[current].classList.remove('active');
-        current = (current + 1) % images.length;
-        images[current].classList.add('active');
+        secondimages[secondcurrent].classList.remove('active');
+        secondcurrent = (secondcurrent + 1) % secondimages.length;
+        secondimages[secondcurrent].classList.add('active');
     }, 1000);
 </script>
 
@@ -337,6 +337,7 @@ if __name__ == "__main__":
 </code></pre>
 </body>
 </html>
+
 
 
 
