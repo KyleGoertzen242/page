@@ -78,30 +78,6 @@
             z-index: 1;
         }
         
-        #ad-container1 {
-            position: relative;    /* make this the reference for absolute images */
-            width: 480px;          /* width of your images */
-            height: 640px;         /* height of your images */
-            margin-left: 1000px;    /* if you want to shift container right */
-            margin-top: 300px;
-        }
-        
-        #ad-container1 img {
-            position: absolute;
-            top: 50%;              /* center vertically */
-            left: 50%;             /* center horizontally */
-            height: 480px;
-            width: 640px;
-            transform: translate(-50%, -50%); /* center transform */
-            opacity: 0;
-            transition: opacity 0.2s ease-in-out;
-        }
-        
-        #ad-container1 img.active1 {
-            opacity: 1;
-            z-index: 1;
-        }
-        
         .message {
             margin-top: 10px;
             font-size: 14px;
@@ -136,24 +112,6 @@
 </script>
 
 <br>
-
-<div id="ad-container1">
-    <img src="image4.png" class="active1" alt="Ad 4">
-    <img src="image5.png" alt="Ad 5">
-</div>
-
-<br>
-
-<script>
-    const images = document.querySelectorAll('#ad-container1 img');
-    let current = 0;
-    
-    setInterval(() => {
-      images[current].classList.remove('active1');
-      current = (current + 1) % images.length;
-      images[current].classList.add('active1');
-    }, 1000);
-</script>
 
 <a href="https://www.instagram.com/rain_dance_420/" target="_blank" style="text-decoration: none; color: #E1306C; font-weight: bold; font-family: Arial, sans-serif;">
   https://www.instagram.com/rain_dance_420/ Follow me on Instagram
@@ -343,6 +301,7 @@ if __name__ == "__main__":
 </code></pre>
 </body>
 </html>
+
 
 
 
