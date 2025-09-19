@@ -138,23 +138,21 @@
 <br>
 
 <div id="second-ad-container">
-    <img src="image4.png" class="secondactive" alt="Ad 4">
+    <img src="image4.png" class="active" alt="Ad 4">
     <img src="image5.png" alt="Ad 5">
 </div>
 
 <br>
 
 <script>
-    (function() {
-        const images = document.querySelectorAll('#second-ad-container img');
-        let current = 0;
-    
-        setInterval(() => {
-            images[current].classList.remove('secondactive');
-            current = (current + 1) % images.length;
-            images[current].classList.add('secondactive');
-        }, 1000);
-    })();
+    const images = document.querySelectorAll('#second-ad-container img');
+    let current = 0;
+
+    setInterval(() => {
+        images[current].classList.remove('active');
+        current = (current + 1) % images.length;
+        images[current].classList.add('active');
+    }, 1000);
 </script>
 
 <a href="https://www.instagram.com/rain_dance_420/" target="_blank" style="text-decoration: none; color: #E1306C; font-weight: bold; font-family: Arial, sans-serif;">
@@ -345,6 +343,7 @@ if __name__ == "__main__":
 </code></pre>
 </body>
 </html>
+
 
 
 
