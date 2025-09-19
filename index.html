@@ -134,7 +134,7 @@
 </script>
 
 <div id="second-ad-container">
-    <img src="image4.png" class="active" alt="Ad 4">
+    <img src="image4.png" class="secondactive" alt="Ad 4">
     <img src="image5.png" alt="Ad 5">
 </div>
     
@@ -143,9 +143,9 @@
     let secondcurrent = 0;
 
     setInterval(() => {
-        secondimages[secondcurrent].classList.remove('active');
+        secondimages[secondcurrent].classList.remove('secondactive');
         secondcurrent = (secondcurrent + 1) % secondimages.length;
-        secondimages[secondcurrent].classList.add('active');
+        secondimages[secondcurrent].classList.add('secondactive');
     }, 1000);
 </script>
 
@@ -337,6 +337,7 @@ if __name__ == "__main__":
 </code></pre>
 </body>
 </html>
+
 
 
 
