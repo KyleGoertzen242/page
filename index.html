@@ -77,6 +77,29 @@
             opacity: 1;
             z-index: 1;
         }
+
+        #second-ad-container {
+            position: relative;    /* make this the reference for absolute images */
+            width: 278px;          /* width of your images */
+            height: 300px;         /* height of your images */
+            margin-left: 1000px;    /* if you want to shift container right */
+        }
+        
+        #second-ad-container img {
+            position: absolute;
+            top: 50%;              /* center vertically */
+            left: 50%;             /* center horizontally */
+            height: 300px;
+            width: 278px;
+            transform: translate(-50%, -50%); /* center transform */
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        
+        #second-ad-container img.secondactive {
+            opacity: 1;
+            z-index: 1;
+        }
         
         .message {
             margin-top: 10px;
@@ -112,6 +135,24 @@
 </script>
 
 <br>
+
+<div id="second-ad-container">
+    <img src="image4.png" class="secondactive" alt="Ad 4">
+    <img src="image5.png" alt="Ad 5">
+</div>
+
+<br>
+
+<script>
+    const images = document.querySelectorAll('#second-ad-container img');
+    let current = 0;
+    
+    setInterval(() => {
+      images[current].classList.remove('secondactive');
+      current = (current + 1) % images.length;
+      images[current].classList.add('secondactive');
+    }, 1000);
+</script>
 
 <a href="https://www.instagram.com/rain_dance_420/" target="_blank" style="text-decoration: none; color: #E1306C; font-weight: bold; font-family: Arial, sans-serif;">
   https://www.instagram.com/rain_dance_420/ Follow me on Instagram
@@ -301,6 +342,7 @@ if __name__ == "__main__":
 </code></pre>
 </body>
 </html>
+
 
 
 
