@@ -55,30 +55,28 @@
             background-color: #2978b5;
         }
 
-#ad-container {
-    position: relative;
-    width: 640px;
-    height: 480px;
-    overflow: hidden;
-    /* Remove top and left here */
-}
-
-#ad-container img {
-    position: absolute;
-    top: 50%;      /* Add these */
-    left: 50%;     /* Add these */
-    width: 640px;
-    height: 480px;
-    transform: translate(-50%, -50%);
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
-}
-
-#ad-container img.active {
-    opacity: 1;
-    z-index: 1;
-}
-
+        #ad-container {
+            position: relative;
+            top: 50%;
+            left: 50%;
+            width: 640px;
+            height: 480px;
+            overflow: hidden;
+        }
+        
+        #ad-container img {
+            position: absolute;
+            width: 640px;
+            height: 480px;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        
+        #ad-container img.active {
+            opacity: 1;
+            z-index: 1;
+        }
 
         .message {
             margin-top: 10px;
@@ -301,6 +299,7 @@ if __name__ == "__main__":
 </code></pre>
 </body>
 </html>
+
 
 
 
