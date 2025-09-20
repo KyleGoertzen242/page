@@ -100,6 +100,29 @@
             opacity: 1;
             z-index: 1;
         }
+
+        #third-ad-container {
+        	position: relative;    /* make this the reference for absolute images */
+        	width: 278px;          /* width of your images */
+        	height: 300px;         /* height of your images */
+        	margin-left: 1000px;    /* if you want to shift container right */
+        }
+        
+        #third-ad-container img {
+        	position: absolute;
+        	top: 50%;              /* center vertically */
+        	left: 50%;             /* center horizontally */
+        	height: 300px;
+        	width: 278px;
+        	transform: translate(-50%, -50%); /* center transform */
+        	opacity: 0;
+        	transition: opacity 0.2s ease-in-out;
+        }
+        
+        #third-ad-container img.thirdactive {
+        	opacity: 1;
+        	z-index: 1;
+        }
         
         .message {
             margin-top: 10px;
@@ -148,14 +171,39 @@
     }, 1000);
 </script>
 
+<div id="third-ad-container">
+    <img src="image6.png" class="thirdactive" alt="Ad 6">
+    <img src="image7.png" alt="Ad 7">
+    <img src="image8.png" alt="Ad 8">
+    <img src="image9.png" alt="Ad 9">
+</div>
+    
+<script>
+    const thirdimages = document.querySelectorAll('#third-ad-container img');
+    let thirdcurrent = 0;
+
+    setInterval(() => {
+        thirdimages[thirdcurrent].classList.remove('thirdactive');
+        thirdcurrent = (thirdcurrent + 1) % thirdimages.length;
+        thirdimages[thirdcurrent].classList.add('thirdactive');
+    }, 1000);
+</script>
+
+
 <a href="https://www.instagram.com/rain_dance_420/" target="_blank" style="text-decoration: none; color: #E1306C; font-weight: bold; font-family: Arial, sans-serif;">
   https://www.instagram.com/rain_dance_420/ Follow me on Instagram
 </a>
 
 <br>
     
-<a href="https://kylegoertzen242.github.io/page/" target="_blank" style="text-decoration: none; color: #E1306C; font-weight: bold; font-family: Arial, sans-serif;">
+<a href="https://www.friendcodeforum.com/" target="_blank" style="text-decoration: none; color: #E1306C; font-weight: bold; font-family: Arial, sans-serif;">
   https://kylegoertzen.github.io/page/ Send e-transfer to kgoertzen14@gmail.com in Canada 🇨🇦 
+</a>
+
+<br>
+
+<a href="https://ebay.us/m/X94yDQ/" target="_blank" style="text-decoration: none; color: #E1306C; font-weight: bold; font-family: Arial, sans-serif;">
+  https://ebay.us/m/X94yDQ Link to Japanese_hobbyneeds eBay store for collectables "I’m a seller based in Japan offering unique Pokémon and Japanese cultural items. As a lifelong fan, I specialize in vintage, rare, and local-only collectibles. My shop features items you won’t easily find outside Japan. All orders are securely packed and shipped via FedEx or Japan Post, with tracking. I understand the importance of item condition and safe delivery, especially for collectors. If a price doesn’t work for you, feel free to send an offer. Many items are flexible. Also, please watch items you like — we often send private discounts to watchers. Customer satisfaction is very important. If there’s ever an issue that would prevent you from leaving 5 stars, please contact me first so I can help resolve it. Thank you for visiting my store. I hope you find something truly special and nostalgic from Japan! Gifu Prefectural Public Safety Commission Secondhand dealer number 531180002492 K.Toru"
 </a>
 
 <hr>
@@ -336,6 +384,7 @@ if __name__ == "__main__":
 </code></pre>
 </body>
 </html>
+
 
 
 
