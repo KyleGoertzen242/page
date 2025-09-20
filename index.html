@@ -124,6 +124,29 @@
         	z-index: 1;
         }
 
+        #fourth-ad-container {
+        	position: relative;    /* make this the reference for absolute images */
+        	width: 140px;          /* width of your images */
+        	height: 300px;         /* height of your images */
+        	/*margin-left: 1000px;    /* if you want to shift container right */
+        }
+        
+        #fourth-ad-container img {
+        	position: absolute;
+        	top: 50%;              /* center vertically */
+        	left: 50%;             /* center horizontally */
+        	height: 300px;
+        	width: 140px;
+        	transform: translate(-50%, -50%); /* center transform */
+        	opacity: 0;
+        	transition: opacity 0.2s ease-in-out;
+        }
+        
+        #fourth-ad-container img.fourthactive {
+        	opacity: 1;
+        	z-index: 1;
+        }
+
         #layout {
             width:100%;
         }
@@ -206,6 +229,23 @@
                 thirdimages[thirdcurrent].classList.add('thirdactive');
             }, 5000);
         </script>
+        
+        <div id="fourth-ad-container">
+            <img src="image10.png" class="fourthactive" alt="Ad 10">
+            <img src="image11.png" alt="Ad 11">
+            <img src="image12.png" alt="Ad 12">
+        </div>
+            
+        <script>
+            const fourthimages = document.querySelectorAll('#fourth-ad-container img');
+            let fourthcurrent = 0;
+        
+            setInterval(() => {
+                fourthimages[fourthcurrent].classList.remove('fourthactive');
+                fourthcurrent = (fourthcurrent + 1) % fourthimages.length;
+                fourthimages[fourthcurrent].classList.add('fourthaactive');
+            }, 5000);
+        </script>
     </div>
 
     <div id="textdiv">
@@ -237,6 +277,12 @@
             I hope you find something truly special and nostalgic from Japan! <br>
             Gifu Prefectural Public Safety Commission <br>Secondhand dealer number 531180002492 <br>
             K.Toru"
+        </a>
+
+        <br>
+        
+        <a href="https://ytmp3.cc/" target="_blank" style="text-decoration: none; color: #E1306C; font-weight: bold; font-family: Arial, sans-serif;">
+          https://ytmp3.cc/ YT to MP3 Converter
         </a>
         
         <hr>
@@ -449,6 +495,7 @@ if __name__ == "__main__":
 <div>
 </body>
 </html>
+
 
 
 
