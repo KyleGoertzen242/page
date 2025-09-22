@@ -147,6 +147,29 @@
         	z-index: 1;
         }
 
+        #fifth-ad-container {
+        	position: relative;    /* make this the reference for absolute images */
+        	width: 140px;          /* width of your images */
+        	height: 300px;         /* height of your images */
+        	/*margin-left: 1000px;    /* if you want to shift container right */
+        }
+        
+        #fifth-ad-container img {
+        	position: absolute;
+        	top: 50%;              /* center vertically */
+        	left: 50%;             /* center horizontally */
+        	height: 300px;
+        	width: 140px;
+        	transform: translate(-50%, -50%); /* center transform */
+        	opacity: 0;
+        	transition: opacity 0.2s ease-in-out;
+        }
+        
+        #fifth-ad-container img.fifthactive {
+        	opacity: 1;
+        	z-index: 1;
+        }
+
         #layout {
             width:100%;
         }
@@ -246,6 +269,23 @@
                 fourthimages[fourthcurrent].classList.add('fourthactive');
             }, 1500);
         </script>
+
+        <div id="fifth-ad-container">
+            <img src="image13.png" class="fifthactive" alt="Ad 13">
+            <img src="image14.png" alt="Ad 14">
+            <img src="image15.png" alt="Ad 15">
+        </div>
+            
+        <script>
+            const fifthimages = document.querySelectorAll('#fifth-ad-container img');
+            let fourthcurrent = 0;
+        
+            setInterval(() => {
+                fifthimages[fifthcurrent].classList.remove('fifthactive');
+                fifthcurrent = (fifthcurrent + 1) % fifthimages.length;
+                fifthimages[fifthcurrent].classList.add('fifthactive');
+            }, 10000);
+        </script>
     </div>
 
     <div id="textdiv">
@@ -283,6 +323,12 @@
         
         <a href="https://ytmp3.cc/" target="_blank" style="text-decoration: none; color: #E1306C; font-weight: bold; font-family: Arial, sans-serif;">
           https://ytmp3.cc/ YT to MP3 Converter
+        </a>
+
+		<br>
+        
+        <a href="https://near-reality.com/" target="_blank" style="text-decoration: none; color: #E1306C; font-weight: bold; font-family: Arial, sans-serif;">
+          https://near-reality.com/ NR Oldschool
         </a>
         
         <hr>
@@ -495,6 +541,7 @@ if __name__ == "__main__":
 <div>
 </body>
 </html>
+
 
 
 
