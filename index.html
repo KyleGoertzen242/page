@@ -170,6 +170,29 @@
         	z-index: 1;
         }
 
+		#sixth-ad-container {
+        	position: relative;    /* make this the reference for absolute images */
+        	width: 140px;          /* width of your images */
+        	height: 300px;         /* height of your images */
+        	/*margin-left: 1000px;    /* if you want to shift container right */
+        }
+        
+        #sixth-ad-container img {
+        	position: absolute;
+        	top: 50%;              /* center vertically */
+        	left: 50%;             /* center horizontally */
+        	height: 300px;
+        	width: 140px;
+        	transform: translate(-50%, -50%); /* center transform */
+        	opacity: 0;
+        	transition: opacity 0.2s ease-in-out;
+        }
+        
+        #sixth-ad-container img.sixthactive {
+        	opacity: 1;
+        	z-index: 1;
+        }
+
         #layout {
             width:100%;
         }
@@ -286,6 +309,23 @@
                 fifthimages[fifthcurrent].classList.add('fifthactive');
             }, 5000);
         </script>
+
+		<div id="sixth-ad-container">
+            <img src="image16.png" class="sixthactive" alt="Ad 16">
+            <img src="image17.png" alt="Ad 17">
+            <img src="image18.png" alt="Ad 18">
+        </div>
+            
+        <script>
+            const sixthimages = document.querySelectorAll('#sixth-ad-container img');
+            let sixthcurrent = 0;
+        
+            setInterval(() => {
+                sixthimages[sixthcurrent].classList.remove('sixthactive');
+                sixthcurrent = (sixthcurrent + 1) % sixthimages.length;
+                sixthimages[sixthcurrent].classList.add('sixthactive');
+            }, 5000);
+        </script>
     </div>
 
     <div id="textdiv">
@@ -300,6 +340,12 @@
         </a>
         
         <br>
+		
+        <a href="https://www.instagram.com/yugioholdhead/" target="_blank" style="text-decoration: none; color: #E1306C; font-weight: bold; font-family: Arial, sans-serif;">
+          https://www.instagram.com/yugioholdhead/ YuGiOhOldHead Yu-Gi-Oh! Content and Auctions daily based out of France 
+        </a>
+
+		<br>
         
         <a href="https://ebay.us/m/X94yDQ/" target="_blank" style="text-decoration: none; color: #E1306C; font-weight: bold; font-family: Arial, sans-serif;">
           https://ebay.us/m/X94yDQ Link to Japanese_hobbyneeds eBay store for collectables<br>
@@ -541,6 +587,7 @@ if __name__ == "__main__":
 <div>
 </body>
 </html>
+
 
 
 
