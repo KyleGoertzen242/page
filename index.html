@@ -256,7 +256,7 @@
 				const messageDiv = document.getElementById("message");
 				messageDiv.textContent = `Welcome, ${result.user.displayName}! You are logged in.`;
 				messageDiv.style.color = "green";
-				window.location.href = "/";
+				window.location.href = "/?name=" + encodeURIComponent(result.user.displayName);
 			})
 			.catch(err => {
 				alert("Error: " + err.message);
@@ -265,6 +265,18 @@
 </script>
 	
 <div id="message"></div>
+
+<script>
+	window.addEventListener("DOMContentLoaded", () => {
+		const params = new URLSearchParams(window.location.search);
+		const name = params.get("name");
+		
+		if (name) {
+			document.getElementById("message").style.color = "green";
+			document.getElementById("message").textContent = `Welcome, ${name}!`;
+		}
+	});
+</script>
 	
 <button id="logout">Logout</button>
 
@@ -645,6 +657,7 @@ if __name__ == "__main__":
 <div>
 </body>
 </html>
+
 
 
 
