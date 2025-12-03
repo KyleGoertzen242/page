@@ -220,8 +220,68 @@
     </style>
 </head>
 <body>
+	
+<script type="module">
+	import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
+	const auth = getAuth();
+	onAuthStateChanged(auth, user => {
+		if (!user) {
+			window.location.href = "/page.html";
+		}
+	});
+</script>
 
+<button id="googleLogin">Sign in with Google</button>
+<script type="module">
+	import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+	import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
+	  const firebaseConfig = {
+	    apiKey: "AIzaSyBrZTwbNcyZRIUaPXa1tuksDw3mwTI7E_o",
+	    authDomain: "friendcodeforum-fe84c.firebaseapp.com",
+	    projectId: "friendcodeforum-fe84c",
+	    storageBucket: "friendcodeforum-fe84c.firebasestorage.app",
+	    messagingSenderId: "134978263228",
+	    appId: "1:134978263228:web:5e25b25af65f088288d8b9"
+	  };
+
+	const app = initializeApp(firebaseConfig);
+	const auth = getAuth(app);
+	const provider = new GoogleAuthProvider();
+
+	document.getElementById("googleLogin").onclick = () => {
+		signInWithPopup(auth, provider)
+			.then(() => {
+				const messageDiv = document.getElementById("message");
+				messageDiv.textContent = `Welcome, ${result.user.displayName}! You are logged in.`;
+				messageDiv.style.color = "green";
+				setTimeout(() => {
+					window.location.href = "/page.html";
+				}, 2000);
+			})
+			.catch(err => {
+				alert("Error: " + err.message);
+			});
+	};
+</script>
+	
+<div id="message"></div>
+	
+<button id="logout">Logout</button>
+
+<script type="module">
+	import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
+	const auth = getAuth();
+
+	document.getElementById("logout").onclick = () => {
+		signOut(auth).then(() => {
+			window.location.href = "/page.html";
+		});
+	};
+</script>
+	
 <div id="layout">
 <div id="main-layout">
     <div id="ads">
@@ -587,6 +647,7 @@ if __name__ == "__main__":
 <div>
 </body>
 </html>
+
 
 
 
