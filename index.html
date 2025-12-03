@@ -252,7 +252,7 @@
 
 	document.getElementById("googleLogin").onclick = () => {
 		signInWithPopup(auth, provider)
-			.then(() => {
+			.then((result) => {
 				const messageDiv = document.getElementById("message");
 				messageDiv.textContent = `Welcome, ${result.user.displayName}! You are logged in.`;
 				messageDiv.style.color = "green";
@@ -647,6 +647,7 @@ if __name__ == "__main__":
 <div>
 </body>
 </html>
+
 
 
 
