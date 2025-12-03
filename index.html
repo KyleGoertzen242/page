@@ -256,9 +256,7 @@
 				const messageDiv = document.getElementById("message");
 				messageDiv.textContent = `Welcome, ${result.user.displayName}! You are logged in.`;
 				messageDiv.style.color = "green";
-				setTimeout(() => {
-					window.location.href = "/page.html";
-				}, 2000);
+				window.location.href = "/page.html";
 			})
 			.catch(err => {
 				alert("Error: " + err.message);
@@ -647,6 +645,7 @@ if __name__ == "__main__":
 <div>
 </body>
 </html>
+
 
 
 
