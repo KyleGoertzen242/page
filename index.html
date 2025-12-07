@@ -235,7 +235,7 @@
 <button id="googleLogin">Sign in with Google</button>
 <script type="module">
 	import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-	import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+	import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 	import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 	const firebaseConfig = {
@@ -644,6 +644,7 @@ if __name__ == "__main__":
 <div>
 </body>
 </html>
+
 
 
 
