@@ -236,6 +236,7 @@
 <script type="module">
 	import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 	import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+	import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 	  const firebaseConfig = {
 	    apiKey: "AIzaSyBrZTwbNcyZRIUaPXa1tuksDw3mwTI7E_o",
@@ -248,48 +249,37 @@
 
 	const app = initializeApp(firebaseConfig);
 	const auth = getAuth(app);
+	const db = getFirestore(app);
 	const provider = new GoogleAuthProvider();
 
-	document.getElementById("googleLogin").onclick = () => {
-		signInWithPopup(auth, provider)
-			.then((result) => {
-				const user = result.user;
-				const uid = user.uid;
-				
-				const userDocRef = doc(db, "users", uid);
-				const userSnap = await getDoc(userDocRef);
-				
-				let coin = 0;
-				
-				if (userSnap.exists()) {
-					coin = userSnap.data().coins; 
-				}
-				
-				const messageDiv = document.getElementById("message");
-				messageDiv.textContent = `Welcome, ${result.user.displayName}! You are logged in.`;
-				messageDiv.style.color = "green";
-				window.location.href = `/?name=${encodeURIComponent(user.displayName)}&custom=${encodeURIComponent(coin)}`;
-			})
-			.catch(err => {
-				alert("Error: " + err.message);
-			});
+	document.getElementById("googleLogin").onclick = async () => {
+	  try {
+	    // Sign in
+	    const result = await signInWithPopup(auth, provider);
+	    const user = result.user;
+	    const uid = user.uid;
+	
+	    // Fetch Firestore document
+	    const userDocRef = doc(db, "users", uid);
+	    const userSnap = await getDoc(userDocRef);
+	
+	    let coin = 0;
+	    if (userSnap.exists()) {
+	      coin = userSnap.data().coins; // your custom field
+	    }
+	
+	    // Display directly on the page
+	    const messageDiv = document.getElementById("message");
+	    messageDiv.style.color = "green";
+	    messageDiv.textContent = `Welcome, ${user.displayName}! You have ${coin} coins.`;
+	
+	  } catch (err) {
+	    alert("Error: " + err.message);
+	  }
 	};
 </script>
 	
 <div id="message"></div>
-
-<script>
-	window.addEventListener("DOMContentLoaded", () => {
-		const params = new URLSearchParams(window.location.search);
-		const name = params.get("name");
-		const coin = params.get("coin");
-		
-		if (name) {
-			document.getElementById("message").style.color = "green";
-			document.getElementById("message").textContent = `Welcome, ${name}, you have ${coin} coins!`;
-		}
-	});
-</script>
 	
 <button id="logout">Logout</button>
 
@@ -650,6 +640,7 @@ if __name__ == "__main__":
 <div>
 </body>
 </html>
+
 
 
 
