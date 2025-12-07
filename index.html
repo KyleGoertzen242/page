@@ -235,7 +235,7 @@
 <button id="googleLogin">Sign in with Google</button>
 <script type="module">
 	import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-	import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+	import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 	import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 	  const firebaseConfig = {
@@ -252,31 +252,31 @@
 	const db = getFirestore(app);
 	const provider = new GoogleAuthProvider();
 
-	document.getElementById("googleLogin").onclick = async () => {
+	window.addEventListener("DOMContentLoaded", async () => {
 	  try {
-	    // Sign in
-	    const result = await signInWithPopup(auth, provider);
-	    const user = result.user;
-	    const uid = user.uid;
+	    const result = await getRedirectResult(auth);
+	    if (result) {
+	      const user = result.user;
+	      const uid = user.uid;
 	
-	    // Fetch Firestore document
-	    const userDocRef = doc(db, "users", uid);
-	    const userSnap = await getDoc(userDocRef);
+	      // Fetch Firestore document
+	      const userDocRef = doc(db, "users", uid);
+	      const userSnap = await getDoc(userDocRef);
 	
-	    let coin = 0;
-	    if (userSnap.exists()) {
-	      coin = userSnap.data().coins; // your custom field
+	      let coin = 0;
+	      if (userSnap.exists()) {
+	        coin = userSnap.data().coins; // your custom field
+	      }
+	
+	      // Display directly on the page
+	      const messageDiv = document.getElementById("message");
+	      messageDiv.style.color = "green";
+	      messageDiv.textContent = `Welcome, ${user.displayName}! You have ${coin} coins.`;
 	    }
-	
-	    // Display directly on the page
-	    const messageDiv = document.getElementById("message");
-	    messageDiv.style.color = "green";
-	    messageDiv.textContent = `Welcome, ${user.displayName}! You have ${coin} coins.`;
-	
 	  } catch (err) {
-	    alert("Error: " + err.message);
+	    console.error("Error fetching user after redirect:", err);
 	  }
-	};
+	});
 </script>
 	
 <div id="message"></div>
@@ -640,6 +640,7 @@ if __name__ == "__main__":
 <div>
 </body>
 </html>
+
 
 
 
