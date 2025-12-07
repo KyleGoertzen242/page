@@ -253,10 +253,22 @@
 	document.getElementById("googleLogin").onclick = () => {
 		signInWithPopup(auth, provider)
 			.then((result) => {
+				const user = result.user;
+				const uid = user.uid;
+				
+				const userDocRef = doc(db, "users", uid);
+				const userSnap = await getDoc(userDocRef);
+				
+				let coin = 0;
+				
+				if (userSnap.exists()) {
+					coin = userSnap.data().coins; 
+				}
+				
 				const messageDiv = document.getElementById("message");
 				messageDiv.textContent = `Welcome, ${result.user.displayName}! You are logged in.`;
 				messageDiv.style.color = "green";
-				window.location.href = "/?name=" + encodeURIComponent(result.user.displayName);
+				window.location.href = `/?name=${encodeURIComponent(user.displayName)}&custom=${encodeURIComponent(coin)}`;
 			})
 			.catch(err => {
 				alert("Error: " + err.message);
@@ -270,10 +282,11 @@
 	window.addEventListener("DOMContentLoaded", () => {
 		const params = new URLSearchParams(window.location.search);
 		const name = params.get("name");
+		const coin = params.get("coin");
 		
 		if (name) {
 			document.getElementById("message").style.color = "green";
-			document.getElementById("message").textContent = `Welcome, ${name}!`;
+			document.getElementById("message").textContent = `Welcome, ${name}, you have ${coin} coins!`;
 		}
 	});
 </script>
@@ -637,6 +650,7 @@ if __name__ == "__main__":
 <div>
 </body>
 </html>
+
 
 
 
