@@ -179,25 +179,20 @@ pre {
 	    const user = result.user;
 	    const uid = user.uid;
 	
-	    // Reference to the user's Firestore document
 	    const userDocRef = doc(db, "users", uid);
 	    const userSnap = await getDoc(userDocRef);
 	
-	    // Default coin value
 	    let coin = 0;
 	
-	    // If the document exists, get the coins field
 	    if (userSnap.exists()) {
 	      coin = userSnap.data().coins;
 	    }
 	
-	    // Display welcome message with user's displayName and coins
 	    const messageDiv = document.getElementById("message");
 	    messageDiv.style.color = "green";
 	    messageDiv.textContent = `Welcome, ${user.displayName}! You have ${coin} coins.`;
 	
 	  } catch (err) {
-	    // Show any errors
 	    alert("Error: " + err.message);
 	  }
 	};
@@ -565,3 +560,4 @@ if __name__ == "__main__":
 <div>
 </body>
 </html>
+
