@@ -6,186 +6,104 @@
     <title>Bank</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <style>
-        body {
-            background-color: #121212;
-            color: #d4d4d4;
-            font-family: Consolas, monospace;
-            padding: 20px;
-            margin: 0;
-        }
+body {
+    background-color: #ffffff;
+    color: #111111;
+    font-family: Consolas, monospace;
+    padding: 20px;
+    margin: 0;
+}
 
-        pre {
-            background-color: #1e1e1e;
-            padding: 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            overflow-x: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
+a {
+    color: #0066cc;
+    text-decoration: none;
+    font-weight: 500;
+}
 
-        #ad-container {
-            position: relative;    /* make this the reference for absolute images */
-            width: 140px;          /* width of your images */
-            height: 300px;         /* height of your images */
-            /*margin-left: 1000px;    /* if you want to shift container right */
-        }
-        
-        #ad-container img {
-            position: absolute;
-            top: 50%;              /* center vertically */
-            left: 50%;             /* center horizontally */
-            height: 300px;
-            width: 140px;
-            transform: translate(-50%, -50%); /* center transform */
-            opacity: 0;
-            transition: opacity 0.2s ease-in-out;
-        }
-        
-        #ad-container img.active {
-            opacity: 1;
-            z-index: 1;
-        }
+a:hover {
+    text-decoration: underline;
+    color: #004999;
+}
 
-        #second-ad-container {
-            position: relative;    /* make this the reference for absolute images */
-            width: 140px;          /* width of your images */
-            height: 300px;         /* height of your images */
-            /*margin-left: 1000px;    /* if you want to shift container right */
-        }
-        
-        #second-ad-container img {
-            position: absolute;
-            top: 50%;              /* center vertically */
-            left: 50%;             /* center horizontally */
-            height: 300px;
-            width: 140px;
-            transform: translate(-50%, -50%); /* center transform */
-            opacity: 0;
-            transition: opacity 0.2s ease-in-out;
-        }
-        
-        #second-ad-container img.secondactive {
-            opacity: 1;
-            z-index: 1;
-        }
+pre {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    border: 1px solid #e0e0e0;
+}
 
-        #third-ad-container {
-        	position: relative;    /* make this the reference for absolute images */
-        	width: 140px;          /* width of your images */
-        	height: 300px;         /* height of your images */
-        	/*margin-left: 1000px;    /* if you want to shift container right */
-        }
-        
-        #third-ad-container img {
-        	position: absolute;
-        	top: 50%;              /* center vertically */
-        	left: 50%;             /* center horizontally */
-        	height: 300px;
-        	width: 140px;
-        	transform: translate(-50%, -50%); /* center transform */
-        	opacity: 0;
-        	transition: opacity 0.2s ease-in-out;
-        }
-        
-        #third-ad-container img.thirdactive {
-        	opacity: 1;
-        	z-index: 1;
-        }
+#ad-container,
+#second-ad-container,
+#third-ad-container,
+#fourth-ad-container,
+#fifth-ad-container,
+#sixth-ad-container {
+    position: relative;
+    width: 140px;
+    height: 300px;
+}
 
-        #fourth-ad-container {
-        	position: relative;    /* make this the reference for absolute images */
-        	width: 140px;          /* width of your images */
-        	height: 300px;         /* height of your images */
-        	/*margin-left: 1000px;    /* if you want to shift container right */
-        }
-        
-        #fourth-ad-container img {
-        	position: absolute;
-        	top: 50%;              /* center vertically */
-        	left: 50%;             /* center horizontally */
-        	height: 300px;
-        	width: 140px;
-        	transform: translate(-50%, -50%); /* center transform */
-        	opacity: 0;
-        	transition: opacity 0.2s ease-in-out;
-        }
-        
-        #fourth-ad-container img.fourthactive {
-        	opacity: 1;
-        	z-index: 1;
-        }
+#ad-container img,
+#second-ad-container img,
+#third-ad-container img,
+#fourth-ad-container img,
+#fifth-ad-container img,
+#sixth-ad-container img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 140px;
+    height: 300px;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
 
-        #fifth-ad-container {
-        	position: relative;    /* make this the reference for absolute images */
-        	width: 140px;          /* width of your images */
-        	height: 300px;         /* height of your images */
-        	/*margin-left: 1000px;    /* if you want to shift container right */
-        }
-        
-        #fifth-ad-container img {
-        	position: absolute;
-        	top: 50%;              /* center vertically */
-        	left: 50%;             /* center horizontally */
-        	height: 300px;
-        	width: 140px;
-        	transform: translate(-50%, -50%); /* center transform */
-        	opacity: 0;
-        	transition: opacity 0.2s ease-in-out;
-        }
-        
-        #fifth-ad-container img.fifthactive {
-        	opacity: 1;
-        	z-index: 1;
-        }
+#ad-container img.active,
+#second-ad-container img.secondactive,
+#third-ad-container img.thirdactive,
+#fourth-ad-container img.fourthactive,
+#fifth-ad-container img.fifthactive,
+#sixth-ad-container img.sixthactive {
+    opacity: 1;
+    z-index: 1;
+}
 
-		#sixth-ad-container {
-        	position: relative;    /* make this the reference for absolute images */
-        	width: 140px;          /* width of your images */
-        	height: 300px;         /* height of your images */
-        	/*margin-left: 1000px;    /* if you want to shift container right */
-        }
-        
-        #sixth-ad-container img {
-        	position: absolute;
-        	top: 50%;              /* center vertically */
-        	left: 50%;             /* center horizontally */
-        	height: 300px;
-        	width: 140px;
-        	transform: translate(-50%, -50%); /* center transform */
-        	opacity: 0;
-        	transition: opacity 0.2s ease-in-out;
-        }
-        
-        #sixth-ad-container img.sixthactive {
-        	opacity: 1;
-        	z-index: 1;
-        }
+#layout {
+    width: 100%;
+}
 
-        #layout {
-            width:100%;
-        }
+#main-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
 
-        #main-layout {
-            display: flex;
-            align-items: flex-start;
-        }
+#ads {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
 
-        #ads {
-            display: flex;
-            flex-direction: column;
-        }
+.message {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333333;
+}
 
-        .message {
-            margin-top: 10px;
-            font-size: 14px;
-        }
-
-        .colort {
-            margin-top: 20px;
-            text-align: left;
-            width: 100%;
-        }
+.colort {
+    margin-top: 20px;
+    text-align: left;
+    width: 100%;
+    background-color: #fafafa;
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid #e5e5e5;
+}
     </style>
 </head>
 <body>
@@ -647,6 +565,7 @@ if __name__ == "__main__":
 <div>
 </body>
 </html>
+
 
 
 
