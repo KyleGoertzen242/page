@@ -255,26 +255,6 @@ const firebaseConfig = {
   appId: "1:134978263228:web:5e25b25af65f088288d8b9"
 };
 
-// ====== Google Login ======
-document.getElementById("googleLogin").onclick = async () => {
-  const provider = new GoogleAuthProvider();
-  try {
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    await ensureUserDoc(user);
-    loadCoins(user.uid);
-    loadChats();
-  } catch (err) {
-    alert("Login error: " + err.message);
-  }
-};
-
-// ====== Logout ======
-document.getElementById("logout").onclick = async () => {
-  await signOut(auth);
-  window.location.href = "/";
-};
-
 // ====== Ensure user document exists ======
 async function ensureUserDoc(user) {
   const userRef = doc(db, "users", user.uid);
@@ -286,14 +266,6 @@ async function ensureUserDoc(user) {
       coins: 0
     });
   }
-}
-
-// ====== Display coins ======
-async function loadCoins(uid) {
-  const userSnap = await getDoc(doc(db, "users", uid));
-  if (!userSnap.exists()) return;
-  document.getElementById("message").textContent = 
-    `Welcome! You have ${userSnap.data().coins ?? 0} coins.`;
 }
 
 // ====== Utility: Get UID by email or create placeholder ======
@@ -796,6 +768,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
