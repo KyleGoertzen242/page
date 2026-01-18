@@ -580,7 +580,150 @@ if __name__ == "__main__":
     </div>
 <div>
 <div>
+<div style="display:flex; gap:20px;">
+  <div style="width:220px; border-right:1px solid #ccc;">
+    <h3>Chats</h3>
+    <div id="chatList"></div>
+  </div>
+
+  <div style="flex:1;">
+    <h3 id="chatTitle">Select a chat</h3>
+
+    <div id="messages"
+         style="height:300px; overflow-y:auto; border:1px solid #ccc; padding:5px;">
+    </div>
+
+    <br>
+
+    <input id="toEmail" placeholder="User email" />
+    <br><br>
+
+    <textarea id="messageText" placeholder="Type message"></textarea>
+    <br><br>
+
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+</div>
+
+<script>
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+let currentChatId = null;
+
+function getChatId(email1, email2) {
+  return [email1, email2].sort().join("__");
+}
+
+async function userExists(email) {
+  const snap = await db
+    .collection("users")
+    .where("email", "==", email)
+    .limit(1)
+    .get();
+
+  return !snap.empty;
+}
+
+async function sendMessage() {
+  const user = auth.currentUser;
+  if (!user) {
+    alert("You must be logged in");
+    return;
+  }
+
+  const toEmail = document.getElementById("toEmail").value.trim();
+  const text = document.getElementById("messageText").value.trim();
+
+  if (!toEmail || !text) return;
+
+  const exists = await userExists(toEmail);
+  if (!exists) {
+    alert("That user does not exist on Friend Code Forum");
+    return;
+  }
+
+  const chatId = getChatId(user.email, toEmail);
+  currentChatId = chatId;
+
+  await db.collection("chats").doc(chatId).set({
+    users: [user.email, toEmail],
+    lastMessage: text,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true });
+
+  await db.collection("chats")
+    .doc(chatId)
+    .collection("messages")
+    .add({
+      from: user.email,
+      text: text,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+  document.getElementById("messageText").value = "";
+  loadMessages(chatId);
+}
+
+function loadChats() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  db.collection("chats")
+    .where("users", "array-contains", user.email)
+    .orderBy("updatedAt", "desc")
+    .onSnapshot(snapshot => {
+      const list = document.getElementById("chatList");
+      list.innerHTML = "";
+
+      snapshot.forEach(doc => {
+        const chat = doc.data();
+        const otherEmail = chat.users.find(e => e !== user.email);
+
+        const div = document.createElement("div");
+        div.innerText = otherEmail;
+        div.style.cursor = "pointer";
+        div.style.padding = "6px";
+        div.style.borderBottom = "1px solid #ddd";
+
+        div.onclick = () => {
+          currentChatId = doc.id;
+          document.getElementById("chatTitle").innerText = otherEmail;
+          loadMessages(doc.id);
+        };
+
+        list.appendChild(div);
+      });
+    });
+}
+
+function loadMessages(chatId) {
+  db.collection("chats")
+    .doc(chatId)
+    .collection("messages")
+    .orderBy("createdAt")
+    .onSnapshot(snapshot => {
+      const box = document.getElementById("messages");
+      box.innerHTML = "";
+
+      snapshot.forEach(doc => {
+        const msg = doc.data();
+        const div = document.createElement("div");
+        div.innerText = msg.from + ": " + msg.text;
+        box.appendChild(div);
+      });
+
+      box.scrollTop = box.scrollHeight;
+    });
+}
+
+auth.onAuthStateChanged(user => {
+  if (user) {
+    loadChats();
+  }
+});
+</script>
+
 </body>
 </html>
-
-
