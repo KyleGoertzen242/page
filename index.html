@@ -244,16 +244,8 @@ pre {
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { 
-  getAuth, onAuthStateChanged 
-} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-import { 
-  getFirestore, collection, doc, setDoc, addDoc, getDoc,
-  query, where, orderBy, onSnapshot, serverTimestamp 
-} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-// Firebase config
+// ====== Firebase config ======
 const firebaseConfig = {
     apiKey: "AIzaSyBrZTwbNcyZRIUaPXa1tuksDw3mwTI7E_o",
     authDomain: "friendcodeforum-fe84c.firebaseapp.com",
@@ -263,26 +255,61 @@ const firebaseConfig = {
     appId: "1:134978263228:web:5e25b25af65f088288d8b9"
 };
 
-// Initialize Firebase
+// ====== Initialize Firebase ======
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-let currentChatId = null;
+// ====== Google Login ======
+document.getElementById("googleLogin").onclick = async () => {
+  const provider = new GoogleAuthProvider();
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    await ensureUserDoc(user);
+    loadCoins(user.uid);
+    loadChats();
+  } catch (err) {
+    alert("Login error: " + err.message);
+  }
+};
 
-// Utility: Find a user's UID by email (or create a placeholder)
+// ====== Logout ======
+document.getElementById("logout").onclick = async () => {
+  await signOut(auth);
+  window.location.href = "/";
+};
+
+// ====== Ensure user document exists ======
+async function ensureUserDoc(user) {
+  const userRef = doc(db, "users", user.uid);
+  const snap = await getDoc(userRef);
+  if (!snap.exists()) {
+    await setDoc(userRef, {
+      email: user.email,
+      displayName: user.displayName ?? "",
+      coins: 0
+    });
+  }
+}
+
+// ====== Display coins ======
+async function loadCoins(uid) {
+  const userSnap = await getDoc(doc(db, "users", uid));
+  if (!userSnap.exists()) return;
+  document.getElementById("message").textContent = 
+    `Welcome! You have ${userSnap.data().coins ?? 0} coins.`;
+}
+
+// ====== Utility: Get UID by email or create placeholder ======
 async function getUidByEmail(email) {
-  const usersRef = collection(db, "users");
   const normalizedEmail = email.trim().toLowerCase();
-
+  const usersRef = collection(db, "users");
   const q = query(usersRef, where("email", "==", normalizedEmail));
   const snap = await getDocs(q);
+  if (!snap.empty) return snap.docs[0].id;
 
-  if (!snap.empty) {
-    return snap.docs[0].id;
-  }
-
-  // Create placeholder user if not found
+  // Create placeholder
   const newUserRef = doc(usersRef);
   await setDoc(newUserRef, {
     email: normalizedEmail,
@@ -292,55 +319,47 @@ async function getUidByEmail(email) {
   return newUserRef.id;
 }
 
-// Utility: Consistent chat ID from two UIDs
+// ====== Generate consistent chatId ======
 function getChatId(uid1, uid2) {
   return [uid1, uid2].sort().join("__");
 }
 
-// Send a message
+// ====== Send message ======
 async function sendMessage() {
   const user = auth.currentUser;
   if (!user) return alert("You must be logged in");
 
   const toEmail = document.getElementById("toEmail").value.trim();
   const text = document.getElementById("messageText").value.trim();
-  if (!toEmail || !text) return;
+  if (!toEmail || !text) return alert("Enter recipient email and message");
 
   const toUid = await getUidByEmail(toEmail);
-  const myUid = user.uid;
-  const chatId = getChatId(myUid, toUid);
-  currentChatId = chatId;
+  const chatId = getChatId(user.uid, toUid);
 
-  // Save/update chat document
+  // Update chat doc
   await setDoc(doc(db, "chats", chatId), {
-    users: [myUid, toUid],
+    users: [user.uid, toUid],
     lastMessage: text,
     updatedAt: serverTimestamp()
   }, { merge: true });
 
   // Add message
   await addDoc(collection(db, "chats", chatId, "messages"), {
-    from: myUid,
+    from: user.uid,
     text,
     createdAt: serverTimestamp()
   });
 
   document.getElementById("messageText").value = "";
-  loadMessages(chatId);
 }
 
-// Load all chats for current user
+// ====== Load chats ======
 function loadChats() {
   const user = auth.currentUser;
   if (!user) return;
 
   const chatsRef = collection(db, "chats");
-
-  const q = query(
-    chatsRef,
-    where("users", "array-contains", user.uid),
-    orderBy("updatedAt", "desc")
-  );
+  const q = query(chatsRef, where("users", "array-contains", user.uid), orderBy("updatedAt"));
 
   onSnapshot(q, async snapshot => {
     const list = document.getElementById("chatList");
@@ -350,22 +369,20 @@ function loadChats() {
       const chat = docSnap.data();
       const otherUid = chat.users.find(u => u !== user.uid);
 
-      // Get email for display
       let display = otherUid;
       try {
-        const otherDoc = await getDoc(doc(db, "users", otherUid));
-        if (otherDoc.exists()) display = otherDoc.data().email;
+        const otherSnap = await getDoc(doc(db, "users", otherUid));
+        if (otherSnap.exists()) display = otherSnap.data().email;
       } catch {}
 
       const div = document.createElement("div");
-      div.innerText = display;
+      div.textContent = display + " (" + (chat.lastMessage ?? "") + ")";
       div.style.cursor = "pointer";
       div.style.padding = "6px";
       div.style.borderBottom = "1px solid #ddd";
 
       div.onclick = () => {
-        currentChatId = docSnap.id;
-        document.getElementById("chatTitle").innerText = display;
+        document.getElementById("chatTitle").textContent = display;
         loadMessages(docSnap.id);
       };
 
@@ -374,7 +391,7 @@ function loadChats() {
   });
 }
 
-// Load messages for a specific chat
+// ====== Load messages ======
 function loadMessages(chatId) {
   const messagesRef = collection(db, "chats", chatId, "messages");
   const q = query(messagesRef, orderBy("createdAt"));
@@ -382,29 +399,37 @@ function loadMessages(chatId) {
   onSnapshot(q, snapshot => {
     const box = document.getElementById("messages");
     box.innerHTML = "";
-
     snapshot.forEach(docSnap => {
       const msg = docSnap.data();
-      const div = document.createElement("div");
-      div.innerText = msg.from + ": " + msg.text;
-      box.appendChild(div);
-    });
+      const fromUid = msg.from;
+      let fromEmail = fromUid;
 
+      getDoc(doc(db, "users", fromUid)).then(userSnap => {
+        if (userSnap.exists()) {
+          fromEmail = userSnap.data().email;
+          const div = document.createElement("div");
+          div.textContent = fromEmail + ": " + msg.text;
+          box.appendChild(div);
+        }
+      });
+    });
     box.scrollTop = box.scrollHeight;
   });
 }
 
-// Hook up send button
+// ====== Hook up send button ======
 document.getElementById("sendBtn").onclick = sendMessage;
 
-// Monitor auth state
+// ====== Monitor auth ======
 onAuthStateChanged(auth, user => {
   if (user) {
+    ensureUserDoc(user);
+    loadCoins(user.uid);
     loadChats();
   } else {
     document.getElementById("chatList").innerHTML = "";
     document.getElementById("messages").innerHTML = "";
-    document.getElementById("chatTitle").innerText = "Select a chat";
+    document.getElementById("chatTitle").textContent = "Select a chat";
   }
 });
 </script>
@@ -774,6 +799,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
