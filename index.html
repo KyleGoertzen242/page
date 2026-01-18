@@ -179,7 +179,7 @@ pre {
 	  try {
 	    const result = await signInWithPopup(auth, provider);
 	    const user = result.user;
-	    const uid = user.uid;
+	    const email = user.email;
 	
 	    const userDocRef = doc(db, "users", email);
 	    const userSnap = await getDoc(userDocRef);
@@ -757,6 +757,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
