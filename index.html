@@ -391,7 +391,6 @@ document.getElementById("sendBtn").onclick = sendMessage;
 onAuthStateChanged(auth, user => {
   if (user) {
     ensureUserDoc(user);
-    loadCoins(user.uid);
     loadChats();
   } else {
     document.getElementById("chatList").innerHTML = "";
@@ -768,6 +767,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
