@@ -181,7 +181,7 @@ pre {
 	    const user = result.user;
 	    const uid = user.uid;
 	
-	    const userDocRef = doc(db, "users", uid);
+	    const userDocRef = doc(db, "users", email);
 	    const userSnap = await getDoc(userDocRef);
 	
 	    let coin = 0;
@@ -757,6 +757,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
