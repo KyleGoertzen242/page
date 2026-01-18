@@ -41,7 +41,8 @@ pre {
 #third-ad-container,
 #fourth-ad-container,
 #fifth-ad-container,
-#sixth-ad-container {
+#sixth-ad-container,
+#seventh-ad-container {
     position: relative;
     width: 140px;
     height: 300px;
@@ -52,7 +53,8 @@ pre {
 #third-ad-container img,
 #fourth-ad-container img,
 #fifth-ad-container img,
-#sixth-ad-container img {
+#sixth-ad-container img,
+#seventh-ad-container img {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -68,7 +70,8 @@ pre {
 #third-ad-container img.thirdactive,
 #fourth-ad-container img.fourthactive,
 #fifth-ad-container img.fifthactive,
-#sixth-ad-container img.sixthactive {
+#sixth-ad-container img.sixthactive,
+#seventh-ad-container img.seventhactive {
     opacity: 1;
     z-index: 1;
 }
@@ -319,6 +322,25 @@ pre {
                 sixthimages[sixthcurrent].classList.add('sixthactive');
             }, 1000);
         </script>
+
+		<div id="seventh-ad-container">
+            <img src="Screenshot_20260117-180705.png" class="seventhactive" alt="Ad 19">
+            <img src="Screenshot_20260117-180709.png" alt="Ad 20">
+            <img src="Screenshot_20260117-180716.png" alt="Ad 21">
+			<img src="Screenshot_20260117-180759.png" alt="Ad 22">
+			<img src="Screenshot_20260117-180852.png" alt="Ad 23">
+        </div>
+        
+        <script>
+            const seventhimages = document.querySelectorAll('#seventh-ad-container img');
+            let seventhcurrent = 0;
+            
+            setInterval(() => {
+              seventhimages[seventhcurrent].classList.remove('seventhactive');
+              seventhcurrent = (seventhcurrent + 1) % seventhimages.length;
+              seventhimages[seventhcurrent].classList.add('seventhactive');
+            }, 1000);
+        </script>
     </div>
 
     <div id="textdiv">
@@ -560,4 +582,5 @@ if __name__ == "__main__":
 <div>
 </body>
 </html>
+
 
