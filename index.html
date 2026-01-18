@@ -179,9 +179,9 @@ pre {
 	  try {
 	    const result = await signInWithPopup(auth, provider);
 	    const user = result.user;
-	    const email = user.email;
+	    const uid = user.uid;
 	
-	    const userDocRef = doc(db, "users", email);
+	    const userDocRef = doc(db, "users", uid);
 	    const userSnap = await getDoc(userDocRef);
 	
 	    let coin = 0;
@@ -273,11 +273,10 @@ function getChatId(email1, email2) {
 }
 
 // Check if a user exists
-async function userExists(email) {
-  const usersRef = collection(db, "users");
-  const q = query(usersRef, where("email", "==", email));
-  const snap = await getDocs(q);
-  return !snap.empty;
+async function userExists(uid) {
+  const userDocRef = doc(db, "users", uid);
+  const userSnap = await getDoc(userDocRef);
+  return userSnap.exists();
 }
 
 // Send a message
@@ -757,6 +756,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
