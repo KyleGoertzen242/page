@@ -272,11 +272,25 @@ let currentChatId = null;
 // Look up a UID from the email typed
 async function getUidByEmail(email) {
   const usersRef = collection(db, "users");
-  const q = query(usersRef, where("email", "==", email));
+  const normalizedEmail = email.trim().toLowerCase(); // trim & lowercase for consistency
+  
+  // Search Firestore
+  const q = query(usersRef, where("email", "==", normalizedEmail));
   const snap = await getDocs(q);
-  if (snap.empty) return null;
-  return snap.docs[0].id; // UID
+  
+  if (!snap.empty) {
+    return snap.docs[0].id; // UID found
+  }
+
+  // Not found → create a placeholder user automatically
+  const newUserRef = doc(usersRef); // Firestore auto-ID
+  await setDoc(newUserRef, {
+    email: normalizedEmail,
+    displayName: ""
+  });
+  return newUserRef.id;
 }
+
 
 // Create a consistent chat ID from two UIDs
 function getChatId(uid1, uid2) {
@@ -767,6 +781,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
