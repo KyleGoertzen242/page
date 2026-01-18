@@ -243,11 +243,13 @@ pre {
   </div>
 </div>
 
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 import { 
-  getFirestore, collection, doc, setDoc, addDoc, query, where, getDocs, orderBy, onSnapshot, serverTimestamp 
+  getFirestore, collection, doc, setDoc, addDoc,
+  query, where, getDocs, orderBy, onSnapshot, serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 // Firebase config
@@ -267,50 +269,53 @@ const db = getFirestore(app);
 
 let currentChatId = null;
 
-// Get a unique chat ID based on emails
-function getChatId(email1, email2) {
-  return [email1, email2].sort().join("__");
+// Look up a UID from the email typed
+async function getUidByEmail(email) {
+  const usersRef = collection(db, "users");
+  const q = query(usersRef, where("email", "==", email));
+  const snap = await getDocs(q);
+  if (snap.empty) return null;
+  return snap.docs[0].id; // UID
 }
 
-// Check if a user exists
-async function userExists(uid) {
-  const userDocRef = doc(db, "users", uid);
-  const userSnap = await getDoc(userDocRef);
-  return userSnap.exists();
+// Create a consistent chat ID from two UIDs
+function getChatId(uid1, uid2) {
+  return [uid1, uid2].sort().join("__");
 }
 
-// Send a message
+// Send a message using UID lookup
 async function sendMessage() {
   const user = auth.currentUser;
   if (!user) {
-    alert("You must be logged in");
+    alert("You must be logged in to send messages");
     return;
   }
 
   const toEmail = document.getElementById("toEmail").value.trim();
   const text = document.getElementById("messageText").value.trim();
-
   if (!toEmail || !text) return;
 
-  const exists = await userExists(toEmail);
-  if (!exists) {
+  // Find the recipient’s UID
+  const toUid = await getUidByEmail(toEmail);
+  if (!toUid) {
     alert("That user does not exist on Friend Code Forum");
     return;
   }
 
-  const chatId = getChatId(user.email, toEmail);
+  const myUid = user.uid;
+  const chatId = getChatId(myUid, toUid);
   currentChatId = chatId;
 
-  // Update chat document
+  // Save or update the chat document
   await setDoc(doc(db, "chats", chatId), {
-    users: [user.email, toEmail],
+    users: [myUid, toUid],
     lastMessage: text,
     updatedAt: serverTimestamp()
   }, { merge: true });
 
-  // Add message to subcollection
+  // Add a message entry
   await addDoc(collection(db, "chats", chatId, "messages"), {
-    from: user.email,
+    from: myUid,
     text: text,
     createdAt: serverTimestamp()
   });
@@ -319,31 +324,38 @@ async function sendMessage() {
   loadMessages(chatId);
 }
 
-// Load all chats for the logged-in user
+// Load all chats that include the current user (using UID)
 function loadChats() {
   const user = auth.currentUser;
   if (!user) return;
 
   const chatsRef = collection(db, "chats");
-  const q = query(chatsRef, where("users", "array-contains", user.email), orderBy("updatedAt", "desc"));
+  const q = query(chatsRef, where("users", "array-contains", user.uid), orderBy("updatedAt", "desc"));
 
   onSnapshot(q, snapshot => {
     const list = document.getElementById("chatList");
     list.innerHTML = "";
 
-    snapshot.forEach(docSnap => {
+    snapshot.forEach(async docSnap => {
       const chat = docSnap.data();
-      const otherEmail = chat.users.find(e => e !== user.email);
+      const otherUid = chat.users.find(u => u !== user.uid);
+
+      // Get the other user’s email for display
+      let display = otherUid;
+      try {
+        const otherDoc = await getDoc(doc(db, "users", otherUid));
+        if (otherDoc.exists()) display = otherDoc.data().email;
+      } catch {}
 
       const div = document.createElement("div");
-      div.innerText = otherEmail;
+      div.innerText = display;
       div.style.cursor = "pointer";
       div.style.padding = "6px";
       div.style.borderBottom = "1px solid #ddd";
 
       div.onclick = () => {
         currentChatId = docSnap.id;
-        document.getElementById("chatTitle").innerText = otherEmail;
+        document.getElementById("chatTitle").innerText = display;
         loadMessages(docSnap.id);
       };
 
@@ -352,7 +364,7 @@ function loadChats() {
   });
 }
 
-// Load messages for a specific chat
+// Load messages inside a particular chat
 function loadMessages(chatId) {
   const messagesRef = collection(db, "chats", chatId, "messages");
   const q = query(messagesRef, orderBy("createdAt"));
@@ -367,15 +379,14 @@ function loadMessages(chatId) {
       div.innerText = msg.from + ": " + msg.text;
       box.appendChild(div);
     });
-
     box.scrollTop = box.scrollHeight;
   });
 }
 
-// Hook up send button
+// Hook up the send button
 document.getElementById("sendBtn").onclick = sendMessage;
 
-// Monitor auth state
+// Monitor if user is logged in
 onAuthStateChanged(auth, user => {
   if (user) {
     loadChats();
@@ -756,6 +767,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
