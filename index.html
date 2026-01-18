@@ -247,12 +247,12 @@ pre {
 
 // ====== Firebase config ======
 const firebaseConfig = {
-    apiKey: "AIzaSyBrZTwbNcyZRIUaPXa1tuksDw3mwTI7E_o",
-    authDomain: "friendcodeforum-fe84c.firebaseapp.com",
-    projectId: "friendcodeforum-fe84c",
-    storageBucket: "friendcodeforum-fe84c.firebasestorage.app",
-    messagingSenderId: "134978263228",
-    appId: "1:134978263228:web:5e25b25af65f088288d8b9"
+  apiKey: "AIzaSyBrZTwbNcyZRIUaPXa1tuksDw3mwTI7E_o",
+  authDomain: "friendcodeforum-fe84c.firebaseapp.com",
+  projectId: "friendcodeforum-fe84c",
+  storageBucket: "friendcodeforum-fe84c.firebasestorage.app",
+  messagingSenderId: "134978263228",
+  appId: "1:134978263228:web:5e25b25af65f088288d8b9"
 };
 
 // ====== Initialize Firebase ======
@@ -309,7 +309,7 @@ async function getUidByEmail(email) {
   const snap = await getDocs(q);
   if (!snap.empty) return snap.docs[0].id;
 
-  // Create placeholder
+  // Create placeholder user
   const newUserRef = doc(usersRef);
   await setDoc(newUserRef, {
     email: normalizedEmail,
@@ -333,24 +333,30 @@ async function sendMessage() {
   const text = document.getElementById("messageText").value.trim();
   if (!toEmail || !text) return alert("Enter recipient email and message");
 
-  const toUid = await getUidByEmail(toEmail);
-  const chatId = getChatId(user.uid, toUid);
+  try {
+    const toUid = await getUidByEmail(toEmail);
+    const chatId = getChatId(user.uid, toUid);
 
-  // Update chat doc
-  await setDoc(doc(db, "chats", chatId), {
-    users: [user.uid, toUid],
-    lastMessage: text,
-    updatedAt: serverTimestamp()
-  }, { merge: true });
+    // Update chat doc
+    await setDoc(doc(db, "chats", chatId), {
+      users: [user.uid, toUid],
+      lastMessage: text,
+      updatedAt: serverTimestamp()
+    }, { merge: true });
 
-  // Add message
-  await addDoc(collection(db, "chats", chatId, "messages"), {
-    from: user.uid,
-    text,
-    createdAt: serverTimestamp()
-  });
+    // Add message with fromEmail included
+    await addDoc(collection(db, "chats", chatId, "messages"), {
+      from: user.uid,
+      fromEmail: user.email,
+      text,
+      createdAt: serverTimestamp()
+    });
 
-  document.getElementById("messageText").value = "";
+    document.getElementById("messageText").value = "";
+  } catch (err) {
+    console.error("Failed to send message:", err);
+    alert("Failed to send message: " + err.message);
+  }
 }
 
 // ====== Load chats ======
@@ -391,7 +397,7 @@ function loadChats() {
   });
 }
 
-// ====== Load messages ======
+// ====== Load messages (robust version) ======
 function loadMessages(chatId) {
   const messagesRef = collection(db, "chats", chatId, "messages");
   const q = query(messagesRef, orderBy("createdAt"));
@@ -399,20 +405,14 @@ function loadMessages(chatId) {
   onSnapshot(q, snapshot => {
     const box = document.getElementById("messages");
     box.innerHTML = "";
+
     snapshot.forEach(docSnap => {
       const msg = docSnap.data();
-      const fromUid = msg.from;
-      let fromEmail = fromUid;
-
-      getDoc(doc(db, "users", fromUid)).then(userSnap => {
-        if (userSnap.exists()) {
-          fromEmail = userSnap.data().email;
-          const div = document.createElement("div");
-          div.textContent = fromEmail + ": " + msg.text;
-          box.appendChild(div);
-        }
-      });
+      const div = document.createElement("div");
+      div.textContent = `${msg.fromEmail ?? msg.from}: ${msg.text}`;
+      box.appendChild(div);
     });
+
     box.scrollTop = box.scrollHeight;
   });
 }
@@ -432,7 +432,9 @@ onAuthStateChanged(auth, user => {
     document.getElementById("chatTitle").textContent = "Select a chat";
   }
 });
+
 </script>
+
 	
 <div id="layout">
 <div id="main-layout">
@@ -799,6 +801,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
