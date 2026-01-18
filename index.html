@@ -217,6 +217,7 @@ pre {
 	};
 </script>
 	
+
 <div style="display:flex; gap:20px;">
   <div style="width:220px; border-right:1px solid #ccc;">
     <h3>Chats</h3>
@@ -238,31 +239,48 @@ pre {
     <textarea id="messageText" placeholder="Type message"></textarea>
     <br><br>
 
-    <button onclick="sendMessage()">Send</button>
+    <button id="sendBtn">Send</button>
   </div>
-
 </div>
 
-<script>
-const db = firebase.firestore();
-const auth = firebase.auth();
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { 
+  getFirestore, collection, doc, setDoc, addDoc, query, where, getDocs, orderBy, onSnapshot, serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+// Firebase config
+const firebaseConfig = {
+    apiKey: "AIzaSyBrZTwbNcyZRIUaPXa1tuksDw3mwTI7E_o",
+    authDomain: "friendcodeforum-fe84c.firebaseapp.com",
+    projectId: "friendcodeforum-fe84c",
+    storageBucket: "friendcodeforum-fe84c.firebasestorage.app",
+    messagingSenderId: "134978263228",
+    appId: "1:134978263228:web:5e25b25af65f088288d8b9"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 let currentChatId = null;
 
+// Get a unique chat ID based on emails
 function getChatId(email1, email2) {
   return [email1, email2].sort().join("__");
 }
 
+// Check if a user exists
 async function userExists(email) {
-  const snap = await db
-    .collection("users")
-    .where("email", "==", email)
-    .limit(1)
-    .get();
-
+  const usersRef = collection(db, "users");
+  const q = query(usersRef, where("email", "==", email));
+  const snap = await getDocs(q);
   return !snap.empty;
 }
 
+// Send a message
 async function sendMessage() {
   const user = auth.currentUser;
   if (!user) {
@@ -284,83 +302,95 @@ async function sendMessage() {
   const chatId = getChatId(user.email, toEmail);
   currentChatId = chatId;
 
-  await db.collection("chats").doc(chatId).set({
+  // Update chat document
+  await setDoc(doc(db, "chats", chatId), {
     users: [user.email, toEmail],
     lastMessage: text,
-    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    updatedAt: serverTimestamp()
   }, { merge: true });
 
-  await db.collection("chats")
-    .doc(chatId)
-    .collection("messages")
-    .add({
-      from: user.email,
-      text: text,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
+  // Add message to subcollection
+  await addDoc(collection(db, "chats", chatId, "messages"), {
+    from: user.email,
+    text: text,
+    createdAt: serverTimestamp()
+  });
 
   document.getElementById("messageText").value = "";
   loadMessages(chatId);
 }
 
+// Load all chats for the logged-in user
 function loadChats() {
   const user = auth.currentUser;
   if (!user) return;
 
-  db.collection("chats")
-    .where("users", "array-contains", user.email)
-    .orderBy("updatedAt", "desc")
-    .onSnapshot(snapshot => {
-      const list = document.getElementById("chatList");
-      list.innerHTML = "";
+  const chatsRef = collection(db, "chats");
+  const q = query(chatsRef, where("users", "array-contains", user.email), orderBy("updatedAt", "desc"));
 
-      snapshot.forEach(doc => {
-        const chat = doc.data();
-        const otherEmail = chat.users.find(e => e !== user.email);
+  onSnapshot(q, snapshot => {
+    const list = document.getElementById("chatList");
+    list.innerHTML = "";
 
-        const div = document.createElement("div");
-        div.innerText = otherEmail;
-        div.style.cursor = "pointer";
-        div.style.padding = "6px";
-        div.style.borderBottom = "1px solid #ddd";
+    snapshot.forEach(docSnap => {
+      const chat = docSnap.data();
+      const otherEmail = chat.users.find(e => e !== user.email);
 
-        div.onclick = () => {
-          currentChatId = doc.id;
-          document.getElementById("chatTitle").innerText = otherEmail;
-          loadMessages(doc.id);
-        };
+      const div = document.createElement("div");
+      div.innerText = otherEmail;
+      div.style.cursor = "pointer";
+      div.style.padding = "6px";
+      div.style.borderBottom = "1px solid #ddd";
 
-        list.appendChild(div);
-      });
+      div.onclick = () => {
+        currentChatId = docSnap.id;
+        document.getElementById("chatTitle").innerText = otherEmail;
+        loadMessages(docSnap.id);
+      };
+
+      list.appendChild(div);
     });
+  });
 }
 
+// Load messages for a specific chat
 function loadMessages(chatId) {
-  db.collection("chats")
-    .doc(chatId)
-    .collection("messages")
-    .orderBy("createdAt")
-    .onSnapshot(snapshot => {
-      const box = document.getElementById("messages");
-      box.innerHTML = "";
+  const messagesRef = collection(db, "chats", chatId, "messages");
+  const q = query(messagesRef, orderBy("createdAt"));
 
-      snapshot.forEach(doc => {
-        const msg = doc.data();
-        const div = document.createElement("div");
-        div.innerText = msg.from + ": " + msg.text;
-        box.appendChild(div);
-      });
+  onSnapshot(q, snapshot => {
+    const box = document.getElementById("messages");
+    box.innerHTML = "";
 
-      box.scrollTop = box.scrollHeight;
+    snapshot.forEach(docSnap => {
+      const msg = docSnap.data();
+      const div = document.createElement("div");
+      div.innerText = msg.from + ": " + msg.text;
+      box.appendChild(div);
     });
+
+    box.scrollTop = box.scrollHeight;
+  });
 }
 
-auth.onAuthStateChanged(user => {
+// Hook up send button
+document.getElementById("sendBtn").onclick = sendMessage;
+
+// Monitor auth state
+onAuthStateChanged(auth, user => {
   if (user) {
     loadChats();
+  } else {
+    document.getElementById("chatList").innerHTML = "";
+    document.getElementById("messages").innerHTML = "";
+    document.getElementById("chatTitle").innerText = "Select a chat";
   }
 });
 </script>
+
+    
+  
+
 	
 <div id="layout">
 <div id="main-layout">
@@ -727,5 +757,6 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
