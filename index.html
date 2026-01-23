@@ -217,12 +217,6 @@ pre {
 	};
 </script>
 
-<div id="inventoryBox" style="position:absolute; top:10px; right:10px; width:150px; height:auto; 
-    background:#fafafa; border:1px solid #ccc; border-radius:8px; padding:10px;">
-    <h4>Inventory</h4>
-    <div id="inventoryList"></div>
-</div>
-
 <canvas id="game" width="800" height="400"></canvas>
 
 <script type="module">
@@ -375,10 +369,6 @@ function drawPlayer() {
   }
 }
 
-
-
-
-
 function drawItems() { items.forEach(item => { if (!item.collected) ctx.drawImage(itemSprites[item.id], item.x, item.y, item.size, item.size); }); }
 
 function loop() { ctx.clearRect(0,0,canvas.width,canvas.height); update(); drawItems(); drawPlayer(); requestAnimationFrame(loop); }
@@ -389,7 +379,12 @@ onAuthStateChanged(auth, user => {
   else { player.inventory = []; updateInventoryUI(); }
 });
 </script>
-	
+
+<div id="inventoryBox" style="position:absolute; top:10px; right:10px; width:150px; height:auto; 
+    background:#fafafa; border:1px solid #ccc; border-radius:8px; padding:10px;">
+    <h4>Inventory</h4>
+    <div id="inventoryList"></div>
+</div>
 
 <div style="display:flex; gap:20px;">
   <div style="width:220px; border-right:1px solid #ccc;">
@@ -947,6 +942,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
