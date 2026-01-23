@@ -341,7 +341,7 @@ function drawPlayer() {
     : sprites.idle;
 
   ctx.save();
-  if (player.direction === "left") {
+  if (player.direction === "right") {
     ctx.translate(player.x + player.width, player.y);
     ctx.scale(-1, 1);
     ctx.drawImage(sprite, 0, 0, player.width, player.height);
@@ -355,7 +355,7 @@ function drawPlayer() {
     const hatHeight = 40;
     const offsetY = -20;
 
-    if (player.direction === "left") {
+    if (player.direction === "right") {
       const offsetXLeft = 10;
       ctx.save();
       ctx.translate(player.x + player.width - offsetXLeft - hatWidth, player.y + offsetY);
@@ -942,6 +942,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
