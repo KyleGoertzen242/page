@@ -342,12 +342,11 @@ function update() {
 }
 
 function drawPlayer() {
-  let sprite = player.isMoving 
-    ? (player.animationFrame === 0 ? sprites.walk1 : sprites.walk2) 
+  let sprite = player.isMoving
+    ? (player.animationFrame === 0 ? sprites.walk1 : sprites.walk2)
     : sprites.idle;
 
   ctx.save();
-
   if (player.direction === "left") {
     ctx.translate(player.x + player.width, player.y);
     ctx.scale(-1, 1);
@@ -355,27 +354,27 @@ function drawPlayer() {
   } else {
     ctx.drawImage(sprite, player.x, player.y, player.width, player.height);
   }
+  ctx.restore();
 
   if (player.equipped.hat) {
     const hatWidth = 25;
     const hatHeight = 40;
     const offsetY = -20;
 
-    ctx.save();
-
     if (player.direction === "left") {
       const offsetXLeft = 10;
+      ctx.save();
       ctx.translate(player.x + player.width - offsetXLeft - hatWidth, player.y + offsetY);
       ctx.scale(-1, 1);
       ctx.drawImage(itemSprites.hat, 0, 0, hatWidth, hatHeight);
       ctx.restore();
     } else {
-      const offsetXRight = 15;
+      const offsetXRight = 10;
       ctx.drawImage(itemSprites.hat, player.x + offsetXRight, player.y + offsetY, hatWidth, hatHeight);
     }
   }
-  ctx.restore();
 }
+
 
 
 
@@ -948,6 +947,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
