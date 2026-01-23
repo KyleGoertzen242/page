@@ -216,6 +216,155 @@ pre {
 		});
 	};
 </script>
+
+<div id="inventoryBox" style="position:absolute; top:10px; right:10px; width:150px; height:auto; 
+    background:#fafafa; border:1px solid #ccc; border-radius:8px; padding:10px;">
+    <h4>Inventory</h4>
+    <div id="inventoryList"></div>
+</div>
+
+<canvas id="game" width="800" height="400"></canvas>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, setDoc, updateDoc
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyBrZTwbNcyZRIUaPXa1tuksDw3mwTI7E_o",
+  authDomain: "friendcodeforum-fe84c.firebaseapp.com",
+  projectId: "friendcodeforum-fe84c",
+  storageBucket: "friendcodeforum-fe84c.firebasestorage.app",
+  messagingSenderId: "134978263228",
+  appId: "1:134978263228:web:5e25b25af65f088288d8b9"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const keys = {};
+window.addEventListener("keydown", e => keys[e.key] = true);
+window.addEventListener("keyup", e => keys[e.key] = false);
+
+const sprites = { idle: new Image(), walk1: new Image(), walk2: new Image() };
+sprites.idle.src = "idle.png";
+sprites.walk1.src = "walk1.png";
+sprites.walk2.src = "walk2.png";
+
+const itemSprites = { hat: new Image() };
+itemSprites.hat.src = "hat.png";
+
+let player = {
+  x: 200,
+  y: 270,
+  width: 55,
+  height: 84,
+  direction: "left",
+  speed: 4,
+  inventory: [],
+  equipped: { hat: null },
+  animationFrame: 0,
+  animationTimer: 0,
+  isMoving: false
+};
+
+let worldOffset = 0;
+
+const items = [
+  { id: "hat", name: "red hat", x: 600, y: 300, size: 20, collected: false }
+];
+
+async function loadInventory(uid) {
+  const userRef = doc(db, "users", uid);
+  const snap = await getDoc(userRef);
+  if (snap.exists() && snap.data().inventory) {
+    player.inventory = snap.data().inventory;
+    player.inventory.forEach(item => item.collected = true); // mark collected items
+    updateInventoryUI();
+  }
+}
+
+async function saveInventory(uid) {
+  const userRef = doc(db, "users", uid);
+  const invData = player.inventory.map(i => ({ id: i.id, name: i.name }));
+  await updateDoc(userRef, { inventory: invData });
+}
+
+function updateInventoryUI() {
+  const invDiv = document.getElementById("inventoryList");
+  invDiv.innerHTML = "";
+  player.inventory.forEach((item, index) => {
+    const div = document.createElement("div");
+    div.textContent = `${index+1}. ${item.name}`;
+    invDiv.appendChild(div);
+  });
+}
+
+function update() {
+  player.isMoving = false;
+  if (keys["ArrowRight"]) { player.x += player.speed; player.direction = "left"; player.isMoving = true; }
+  if (keys["ArrowLeft"]) { player.x -= player.speed; player.direction = "right"; player.isMoving = true; }
+
+  if (player.isMoving) {
+    player.animationTimer++;
+    if (player.animationTimer >= 10) { player.animationFrame = (player.animationFrame + 1) % 2; player.animationTimer = 0; }
+  } else { player.animationFrame = 0; player.animationTimer = 0; }
+
+  items.forEach(async item => {
+    if (item.collected) return;
+    const hit = player.x < item.x + item.size && player.x + player.width > item.x &&
+                player.y < item.y + item.size && player.y + player.height > item.y;
+    if (hit) {
+      item.collected = true;
+      player.inventory.push(item);
+      updateInventoryUI();
+      console.log("Collected:", item.name);
+      if (auth.currentUser) await saveInventory(auth.currentUser.uid);
+    }
+  });
+
+  if (player.x < 0) player.x = 0;
+  if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
+
+  player.inventory.forEach((item, index) => {
+    const key = (index+1).toString();
+    if (keys[key] && item.id === "hat") {
+      player.equipped.hat = (player.equipped.hat === item) ? null : item;
+      keys[key] = false;
+    }
+  });
+}
+
+function drawPlayer() {
+  let sprite = player.isMoving ? (player.animationFrame === 0 ? sprites.walk1 : sprites.walk2) : sprites.idle;
+  ctx.save();
+  if (player.direction === "left") { ctx.translate(player.x + player.width, player.y); ctx.scale(-1,1); ctx.drawImage(sprite,0,0,player.width,player.height); }
+  else { ctx.drawImage(sprite, player.x, player.y, player.width, player.height); }
+  ctx.restore();
+
+  if (player.equipped.hat) {
+    const hatX = player.direction==="left" ? player.x + player.width - 50 : player.x + 15;
+    ctx.drawImage(itemSprites.hat, hatX, player.y-20, 25, 40);
+  }
+}
+
+function drawItems() { items.forEach(item => { if (!item.collected) ctx.drawImage(itemSprites[item.id], item.x, item.y, item.size, item.size); }); }
+
+function loop() { ctx.clearRect(0,0,canvas.width,canvas.height); update(); drawItems(); drawPlayer(); requestAnimationFrame(loop); }
+loop();
+
+onAuthStateChanged(auth, user => {
+  if (user) loadInventory(user.uid);
+  else { player.inventory = []; updateInventoryUI(); }
+});
+</script>
 	
 
 <div style="display:flex; gap:20px;">
@@ -770,157 +919,11 @@ if __name__ == "__main__":
     </div>
 <div>
 <div>
-<div id="inventoryBox" style="position:absolute; top:10px; right:10px; width:150px; height:auto; 
-    background:#fafafa; border:1px solid #ccc; border-radius:8px; padding:10px;">
-    <h4>Inventory</h4>
-    <div id="inventoryList"></div>
-</div>
 
-<canvas id="game" width="800" height="400"></canvas>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-import {
-  getFirestore, doc, getDoc, setDoc, updateDoc
-} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
-// Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyBrZTwbNcyZRIUaPXa1tuksDw3mwTI7E_o",
-  authDomain: "friendcodeforum-fe84c.firebaseapp.com",
-  projectId: "friendcodeforum-fe84c",
-  storageBucket: "friendcodeforum-fe84c.firebasestorage.app",
-  messagingSenderId: "134978263228",
-  appId: "1:134978263228:web:5e25b25af65f088288d8b9"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
-
-const keys = {};
-window.addEventListener("keydown", e => keys[e.key] = true);
-window.addEventListener("keyup", e => keys[e.key] = false);
-
-const sprites = { idle: new Image(), walk1: new Image(), walk2: new Image() };
-sprites.idle.src = "idle.png";
-sprites.walk1.src = "walk1.png";
-sprites.walk2.src = "walk2.png";
-
-const itemSprites = { hat: new Image() };
-itemSprites.hat.src = "hat.png";
-
-let player = {
-  x: 200,
-  y: 270,
-  width: 55,
-  height: 84,
-  direction: "left",
-  speed: 4,
-  inventory: [],
-  equipped: { hat: null },
-  animationFrame: 0,
-  animationTimer: 0,
-  isMoving: false
-};
-
-let worldOffset = 0;
-
-const items = [
-  { id: "hat", name: "red hat", x: 600, y: 300, size: 20, collected: false }
-];
-
-async function loadInventory(uid) {
-  const userRef = doc(db, "users", uid);
-  const snap = await getDoc(userRef);
-  if (snap.exists() && snap.data().inventory) {
-    player.inventory = snap.data().inventory;
-    player.inventory.forEach(item => item.collected = true); // mark collected items
-    updateInventoryUI();
-  }
-}
-
-async function saveInventory(uid) {
-  const userRef = doc(db, "users", uid);
-  const invData = player.inventory.map(i => ({ id: i.id, name: i.name }));
-  await updateDoc(userRef, { inventory: invData });
-}
-
-function updateInventoryUI() {
-  const invDiv = document.getElementById("inventoryList");
-  invDiv.innerHTML = "";
-  player.inventory.forEach((item, index) => {
-    const div = document.createElement("div");
-    div.textContent = `${index+1}. ${item.name}`;
-    invDiv.appendChild(div);
-  });
-}
-
-function update() {
-  player.isMoving = false;
-  if (keys["ArrowRight"]) { player.x += player.speed; player.direction = "left"; player.isMoving = true; }
-  if (keys["ArrowLeft"]) { player.x -= player.speed; player.direction = "right"; player.isMoving = true; }
-
-  if (player.isMoving) {
-    player.animationTimer++;
-    if (player.animationTimer >= 10) { player.animationFrame = (player.animationFrame + 1) % 2; player.animationTimer = 0; }
-  } else { player.animationFrame = 0; player.animationTimer = 0; }
-
-  items.forEach(async item => {
-    if (item.collected) return;
-    const hit = player.x < item.x + item.size && player.x + player.width > item.x &&
-                player.y < item.y + item.size && player.y + player.height > item.y;
-    if (hit) {
-      item.collected = true;
-      player.inventory.push(item);
-      updateInventoryUI();
-      console.log("Collected:", item.name);
-      if (auth.currentUser) await saveInventory(auth.currentUser.uid);
-    }
-  });
-
-  if (player.x < 0) player.x = 0;
-  if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
-
-  player.inventory.forEach((item, index) => {
-    const key = (index+1).toString();
-    if (keys[key] && item.id === "hat") {
-      player.equipped.hat = (player.equipped.hat === item) ? null : item;
-      keys[key] = false;
-    }
-  });
-}
-
-function drawPlayer() {
-  let sprite = player.isMoving ? (player.animationFrame === 0 ? sprites.walk1 : sprites.walk2) : sprites.idle;
-  ctx.save();
-  if (player.direction === "left") { ctx.translate(player.x + player.width, player.y); ctx.scale(-1,1); ctx.drawImage(sprite,0,0,player.width,player.height); }
-  else { ctx.drawImage(sprite, player.x, player.y, player.width, player.height); }
-  ctx.restore();
-
-  if (player.equipped.hat) {
-    const hatX = player.direction==="left" ? player.x + player.width - 50 : player.x + 15;
-    ctx.drawImage(itemSprites.hat, hatX, player.y-20, 25, 40);
-  }
-}
-
-function drawItems() { items.forEach(item => { if (!item.collected) ctx.drawImage(itemSprites[item.id], item.x, item.y, item.size, item.size); }); }
-
-function loop() { ctx.clearRect(0,0,canvas.width,canvas.height); update(); drawItems(); drawPlayer(); requestAnimationFrame(loop); }
-loop();
-
-onAuthStateChanged(auth, user => {
-  if (user) loadInventory(user.uid);
-  else { player.inventory = []; updateInventoryUI(); }
-});
-</script>
 
 </body>
 </html>
+
 
 
 
