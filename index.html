@@ -405,6 +405,12 @@ onAuthStateChanged(auth, user => {
   </div>
 </div>
 
+<div id="inventoryBox" style="position:absolute; top:10px; right:10px; width:150px; height:auto; 
+    background:#fafafa; border:1px solid #ccc; border-radius:8px; padding:10px;">
+    <h4>Inventory</h4>
+    <div id="inventoryList"></div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
@@ -567,12 +573,6 @@ onAuthStateChanged(auth, user => {
   }
 });
 </script>
-
-<div id="inventoryBox" style="position:absolute; top:10px; right:10px; width:150px; height:auto; 
-    background:#fafafa; border:1px solid #ccc; border-radius:8px; padding:10px;">
-    <h4>Inventory</h4>
-    <div id="inventoryList"></div>
-</div>
 
 	
 <div id="layout">
@@ -941,6 +941,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
