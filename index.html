@@ -356,14 +356,14 @@ function drawPlayer() {
     const offsetY = -20;
 
     if (player.direction === "right") {
-      const offsetXLeft = 0;
+      const offsetXLeft = 10;
       ctx.save();
       ctx.translate(player.x + player.width - offsetXLeft - hatWidth, player.y + offsetY);
       ctx.scale(-1, 1);
       ctx.drawImage(itemSprites.hat, 0, 0, hatWidth, hatHeight);
       ctx.restore();
     } else {
-      const offsetXRight = 0;
+      const offsetXRight = 10;
       ctx.drawImage(itemSprites.hat, player.x + offsetXRight, player.y + offsetY, hatWidth, hatHeight);
     }
   }
@@ -942,6 +942,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
