@@ -373,7 +373,7 @@ function drawPlayer() {
       ctx.scale(-1, 1);
       ctx.drawImage(spriteItem, 0, 0, itemWidth, itemHeight);
     } else {
-      const hatX = player.x + 15;
+      const hatX = player.x -40;
       const hatY = player.y - 20;
       ctx.drawImage(spriteItem, hatX, hatY, itemWidth, itemHeight);
     }
@@ -954,6 +954,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
