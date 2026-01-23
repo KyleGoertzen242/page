@@ -368,6 +368,7 @@ function drawPlayer() {
       ctx.translate(player.x + player.width - offsetXLeft - hatWidth, player.y + offsetY);
       ctx.scale(-1, 1);
       ctx.drawImage(itemSprites.hat, 0, 0, hatWidth, hatHeight);
+      ctx.restore();
     } else {
       const offsetXRight = 15;
       ctx.drawImage(itemSprites.hat, player.x + offsetXRight, player.y + offsetY, hatWidth, hatHeight);
@@ -947,6 +948,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
