@@ -232,7 +232,6 @@ import {
   getFirestore, doc, getDoc, setDoc, updateDoc
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBrZTwbNcyZRIUaPXa1tuksDw3mwTI7E_o",
   authDomain: "friendcodeforum-fe84c.firebaseapp.com",
@@ -343,17 +342,31 @@ function update() {
 }
 
 function drawPlayer() {
-  let sprite = player.isMoving ? (player.animationFrame === 0 ? sprites.walk1 : sprites.walk2) : sprites.idle;
-  ctx.save();
-  if (player.direction === "left") { ctx.translate(player.x + player.width, player.y); ctx.scale(-1,1); ctx.drawImage(sprite,0,0,player.width,player.height); }
-  else { ctx.drawImage(sprite, player.x, player.y, player.width, player.height); }
-  ctx.restore();
+  let sprite = player.isMoving 
+    ? (player.animationFrame === 0 ? sprites.walk1 : sprites.walk2) 
+    : sprites.idle;
 
-  if (player.equipped.hat) {
-    const hatX = player.direction==="left" ? player.x + player.width - 50 : player.x + 15;
-    ctx.drawImage(itemSprites.hat, hatX, player.y-20, 25, 40);
+  ctx.save();
+
+  if (player.direction === "left") {
+    ctx.translate(player.x + player.width, player.y);
+    ctx.scale(-1, 1);
+    ctx.drawImage(sprite, 0, 0, player.width, player.height);
+
+    if (player.equipped.hat) {
+      ctx.drawImage(itemSprites.hat, 15, -20, 25, 40);
+    }
+  } else {
+    ctx.drawImage(sprite, player.x, player.y, player.width, player.height);
+
+    if (player.equipped.hat) {
+      ctx.drawImage(itemSprites.hat, player.x + 15, player.y - 20, 25, 40);
+    }
   }
+
+  ctx.restore();
 }
+
 
 function drawItems() { items.forEach(item => { if (!item.collected) ctx.drawImage(itemSprites[item.id], item.x, item.y, item.size, item.size); }); }
 
@@ -923,6 +936,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
