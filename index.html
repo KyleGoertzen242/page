@@ -352,20 +352,38 @@ function drawPlayer() {
     ctx.translate(player.x + player.width, player.y);
     ctx.scale(-1, 1);
     ctx.drawImage(sprite, 0, 0, player.width, player.height);
-
-    if (player.equipped.hat) {
-      ctx.drawImage(itemSprites.hat, 15, -20, 25, 40);
-    }
   } else {
     ctx.drawImage(sprite, player.x, player.y, player.width, player.height);
+  }
 
-    if (player.equipped.hat) {
-      ctx.drawImage(itemSprites.hat, player.x + 15, player.y - 20, 25, 40);
+  for (const itemKey in player.equipped) {
+    const item = player.equipped[itemKey];
+    if (!item) continue;
+
+    const spriteItem = itemSprites[item.id];
+    const itemWidth = 25;
+    const itemHeight = 40;
+
+    ctx.save();
+
+    if (player.direction === "left") {
+      const hatX = player.width - 50;
+      const hatY = -20;
+      ctx.translate(hatX + itemWidth, hatY);
+      ctx.scale(-1, 1);
+      ctx.drawImage(spriteItem, 0, 0, itemWidth, itemHeight);
+    } else {
+      const hatX = player.x + 15;
+      const hatY = player.y - 20;
+      ctx.drawImage(spriteItem, hatX, hatY, itemWidth, itemHeight);
     }
+
+    ctx.restore();
   }
 
   ctx.restore();
 }
+
 
 
 function drawItems() { items.forEach(item => { if (!item.collected) ctx.drawImage(itemSprites[item.id], item.x, item.y, item.size, item.size); }); }
@@ -936,6 +954,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
