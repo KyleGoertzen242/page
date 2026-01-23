@@ -261,7 +261,6 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-// ====== Firebase config ======
 const firebaseConfig = {
   apiKey: "AIzaSyBrZTwbNcyZRIUaPXa1tuksDw3mwTI7E_o",
   authDomain: "friendcodeforum-fe84c.firebaseapp.com",
@@ -275,7 +274,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ====== Ensure user document exists ======
 async function ensureUserDoc(user) {
   const userRef = doc(db, "users", user.uid);
   const snap = await getDoc(userRef);
@@ -287,7 +285,6 @@ async function ensureUserDoc(user) {
   }
 }
 
-// ====== Get UID by email, create placeholder if missing ======
 async function getUidByEmail(email) {
   const normalizedEmail = email.trim().toLowerCase();
   const usersRef = collection(db, "users");
@@ -303,12 +300,10 @@ async function getUidByEmail(email) {
   return newUserRef.id;
 }
 
-// ====== Generate consistent chatId ======
 function getChatId(uid1, uid2) {
   return [uid1, uid2].sort().join("__");
 }
 
-// ====== Send message ======
 async function sendMessage() {
   const user = auth.currentUser;
   if (!user) return alert("You must be logged in");
@@ -341,7 +336,6 @@ async function sendMessage() {
   }
 }
 
-// ====== Load chats ======
 function loadChats() {
   const user = auth.currentUser;
   if (!user) return;
@@ -379,7 +373,6 @@ function loadChats() {
   });
 }
 
-// ====== Load messages ======
 function loadMessages(chatId) {
   const messagesRef = collection(db, "chats", chatId, "messages");
   const q = query(messagesRef, orderBy("createdAt"));
@@ -399,10 +392,8 @@ function loadMessages(chatId) {
   });
 }
 
-// ====== Hook up send button ======
 document.getElementById("sendBtn").onclick = sendMessage;
 
-// ====== Monitor auth ======
 onAuthStateChanged(auth, user => {
   if (user) {
     ensureUserDoc(user);
@@ -782,6 +773,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
