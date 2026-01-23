@@ -217,7 +217,19 @@ pre {
 	};
 </script>
 
-<canvas id="game" width="800" height="400"></canvas>
+<canvas 
+    id="game" 
+    width="800" 
+    height="400" 
+    style="
+        border: 5px solid white;
+        border-radius: 20px;
+        box-shadow: 0 0 50px rgba(0,0,0,0.7), 0 0 20px #00ffff inset;
+        background: linear-gradient(to bottom, #222, #555);
+        display: block;
+        margin: 50px auto;
+    ">
+</canvas>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
@@ -405,8 +417,7 @@ onAuthStateChanged(auth, user => {
   </div>
 </div>
 
-<div id="inventoryBox" style="position:absolute; top:10px; right:10px; width:150px; height:auto; 
-    background:#fafafa; border:1px solid #ccc; border-radius:8px; padding:10px;">
+<div id="inventoryBox">
     <h4>Inventory</h4>
     <div id="inventoryList"></div>
 </div>
@@ -941,6 +952,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
