@@ -416,18 +416,34 @@ function drawPlayer() {
     : sprites.idle;
 
   ctx.save();
+
   if (player.direction === "left") {
     ctx.translate(player.x + player.width, player.y);
     ctx.scale(-1, 1);
+
     ctx.drawImage(sprite, 0, 0, player.width, player.height);
+
+    if (player.equipped.hat) {
+      ctx.save();
+      ctx.translate(10 + 25, -20);
+      ctx.scale(-1, 1);
+      ctx.drawImage(itemSprites.hat, -10, 0, 25, 40);
+      ctx.restore();
+    }
+
   } else {
     ctx.drawImage(sprite, player.x, player.y, player.width, player.height);
-  }
-  ctx.restore();
 
-  if (player.equipped.hat) {
-    ctx.drawImage(itemSprites.hat, player.x + 10, player.y - 20, 25, 40);
+    if (player.equipped.hat) {
+      ctx.save();
+      ctx.translate(player.x + 10 + 25, player.y - 20);
+      ctx.scale(-1, 1);
+      ctx.drawImage(itemSprites.hat, -10, 0, 25, 40);
+      ctx.restore();
+    }
   }
+
+  ctx.restore();
 }
 
 function drawItems() {
@@ -1025,6 +1041,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
