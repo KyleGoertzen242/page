@@ -341,7 +341,7 @@ function drawPlayer() {
     : sprites.idle;
 
   ctx.save();
-  if (player.direction === "right") {
+  if (player.direction === "left") {
     ctx.translate(player.x + player.width, player.y);
     ctx.scale(-1, 1);
     ctx.drawImage(sprite, 0, 0, player.width, player.height);
@@ -355,7 +355,7 @@ function drawPlayer() {
     const hatHeight = 40;
     const offsetY = -20;
 
-    if (player.direction === "right") {
+    if (player.direction === "left") {
       const offsetXLeft = 10;
       ctx.save();
       ctx.translate(player.x + player.width - offsetXLeft - hatWidth, player.y + offsetY);
@@ -363,7 +363,7 @@ function drawPlayer() {
       ctx.drawImage(itemSprites.hat, 0, 0, hatWidth, hatHeight);
       ctx.restore();
     } else {
-      const offsetXRight = 10;
+      const offsetXRight = 30;
       ctx.drawImage(itemSprites.hat, player.x + offsetXRight, player.y + offsetY, hatWidth, hatHeight);
     }
   }
@@ -942,6 +942,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
