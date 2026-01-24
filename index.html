@@ -254,11 +254,9 @@ const db = getFirestore(app);
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
-
 const keys = {};
 window.addEventListener("keydown", e => keys[e.key] = true);
 window.addEventListener("keyup", e => keys[e.key] = false);
-
 
 const sprites = {
   idle: new Image(),
@@ -269,9 +267,12 @@ sprites.idle.src = "idle.png";
 sprites.walk1.src = "walk1.png";
 sprites.walk2.src = "walk2.png";
 
-const itemSprites = { hat: new Image() };
+const itemSprites = {
+  hat: new Image(),
+  blue_hat: new Image()
+};
 itemSprites.hat.src = "hat.png";
-
+itemSprites.blue_hat.src = "blue_hat.png";
 
 let player = {
   x: 200,
@@ -287,14 +288,12 @@ let player = {
   isMoving: false
 };
 
-
 const items = [
-  { id: "hat", name: "Red Hat", x: 600, y: 300, size: 20, collected: false }
+  { id: "hat", name: "Red Hat", x: 600, y: 300, size: 20, collected: false },
+  { id: "blue_hat", name: "Blue Hat", x: 500, y: 300, size: 20, collected: false }
 ];
 
-
 const hasItem = id => player.inventory.some(i => i.id === id);
-
 
 async function loadInventory(uid) {
   const snap = await getDoc(doc(db, "users", uid));
@@ -319,7 +318,6 @@ async function saveInventory(uid) {
   });
 }
 
-
 function updateInventoryUI() {
   const invDiv = document.getElementById("inventoryList");
   invDiv.innerHTML = "";
@@ -329,9 +327,7 @@ function updateInventoryUI() {
     btn.textContent = item.name;
     btn.style.display = "block";
     btn.style.marginBottom = "6px";
-
     btn.onclick = () => toggleEquip(item);
-
     invDiv.appendChild(btn);
   });
 }
@@ -349,7 +345,7 @@ function updateEquippedUI() {
 }
 
 function toggleEquip(item) {
-  const slot = item.id;
+  const slot = "hat";
 
   player.equipped[slot] =
     player.equipped[slot]?.id === item.id ? null : item;
@@ -382,7 +378,7 @@ function update() {
     player.animationFrame = 0;
     player.animationTimer = 0;
   }
-  
+
   items.forEach(async item => {
     if (item.collected) return;
 
@@ -417,6 +413,13 @@ function drawPlayer() {
 
   ctx.save();
 
+  const drawHat = () => {
+    if (!player.equipped.hat) return;
+
+    const hatSprite = itemSprites[player.equipped.hat.id];
+    ctx.drawImage(hatSprite, -10, 0, 25, 40);
+  };
+
   if (player.direction === "left") {
     ctx.translate(player.x + player.width, player.y);
     ctx.scale(-1, 1);
@@ -427,7 +430,7 @@ function drawPlayer() {
       ctx.save();
       ctx.translate(10 + 25, -20);
       ctx.scale(-1, 1);
-      ctx.drawImage(itemSprites.hat, -10, 0, 25, 40);
+      drawHat();
       ctx.restore();
     }
 
@@ -438,7 +441,7 @@ function drawPlayer() {
       ctx.save();
       ctx.translate(player.x + 10 + 25, player.y - 20);
       ctx.scale(-1, 1);
-      ctx.drawImage(itemSprites.hat, -10, 0, 25, 40);
+      drawHat();
       ctx.restore();
     }
   }
@@ -446,10 +449,17 @@ function drawPlayer() {
   ctx.restore();
 }
 
+
 function drawItems() {
   items.forEach(item => {
     if (!item.collected) {
-      ctx.drawImage(itemSprites[item.id], item.x, item.y, item.size, item.size);
+      ctx.drawImage(
+        itemSprites[item.id],
+        item.x,
+        item.y,
+        item.size,
+        item.size
+      );
     }
   });
 }
@@ -1041,6 +1051,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
