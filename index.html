@@ -307,18 +307,15 @@ const items = [
 
 const hasItem = id => player.inventory.some(i => i.id === id);
 
+// ------------------ INVENTORY & EQUIP ------------------
+
 function addItem(id, name) {
   if (id === "fish") {
     const existing = player.inventory.find(i => i.id === "fish");
-    if (existing) {
-      existing.qty = (existing.qty || 1) + 1;
-    } else {
-      player.inventory.push({ id, name, qty: 1 });
-    }
+    if (existing) existing.qty = (existing.qty || 1) + 1;
+    else player.inventory.push({ id, name, qty: 1 });
   } else {
-    if (!player.inventory.some(i => i.id === id)) {
-      player.inventory.push({ id, name });
-    }
+    if (!player.inventory.some(i => i.id === id)) player.inventory.push({ id, name });
   }
   updateInventoryUI();
   updateEquippedUI();
@@ -345,24 +342,17 @@ function updateInventoryUI() {
 
     const img = document.createElement("img");
     img.src = itemSprites[item.id].src;
-    img.width = 24;
-    img.height = 24;
-    img.style.marginRight = "6px";
+    img.width = 24; img.height = 24; img.style.marginRight = "6px";
     btn.appendChild(img);
 
     const text = document.createElement("span");
-    if (item.id === "fish") {
-      text.textContent = `${item.name} x${item.qty || 1}`;
-    } else {
-      text.textContent = item.name;
-    }
+    text.textContent = item.id === "fish" ? `${item.name} x${item.qty || 1}` : item.name;
     btn.appendChild(text);
 
     btn.onclick = () => toggleEquip(item);
     invDiv.appendChild(btn);
   });
 }
-
 
 function updateEquippedUI() {
   const eqDiv = document.getElementById("equippedList");
@@ -375,6 +365,8 @@ function updateEquippedUI() {
   });
 }
 
+// ------------------ LEADERBOARD ------------------
+
 function updateLeaderboardUI(data) {
   const lbDiv = document.getElementById("leaderboard");
   if (!lbDiv) return;
@@ -385,6 +377,23 @@ function updateLeaderboardUI(data) {
     lbDiv.appendChild(div);
   });
 }
+
+async function updateLeaderboard() {
+  const usersSnap = await getDocs(collection(db, "users"));
+  const leaderboard = [];
+  usersSnap.forEach(doc => {
+    const d = doc.data();
+    leaderboard.push({ name: d.name || "Unknown", exp: d.exp || 0 });
+  });
+
+  // Include current player if not logged in
+  if (!auth?.currentUser) leaderboard.push({ name: "Unknown", exp: player.exp });
+
+  leaderboard.sort((a, b) => b.exp - a.exp);
+  updateLeaderboardUI(leaderboard.slice(0, 10));
+}
+
+// ------------------ DATABASE ------------------
 
 async function loadInventory(uid) {
   const snap = await getDoc(doc(db, "users", uid));
@@ -401,25 +410,28 @@ async function saveInventory(uid) {
   await updateDoc(doc(db, "users", uid), { inventory: player.inventory, equipped: player.equipped, exp: player.exp });
 }
 
-async function updateLeaderboard() {
-  const usersSnap = await getDocs(collection(db, "users"));
-  const leaderboard = [];
-  usersSnap.forEach(doc => {
-    const d = doc.data();
-    leaderboard.push({ name: d.name || "Unknown", exp: d.exp || 0 });
-  });
-  leaderboard.sort((a, b) => b.exp - a.exp);
-  updateLeaderboardUI(leaderboard.slice(0, 10));
-}
+// ------------------ AUTH ------------------
 
 onAuthStateChanged(auth, user => {
   if (user) { loadInventory(user.uid); updateLeaderboard(); }
   else { player.inventory = []; player.equipped = { hat: null, hand: null }; player.exp = 0; updateInventoryUI(); updateEquippedUI(); }
 });
 
+// ------------------ GAIN EXP ------------------
+
+function gainExp(amount) {
+  player.exp += amount;
+  expPopups.push({ x: player.x + player.width / 2, y: player.y, text: `+${amount} EXP`, alpha: 1 });
+  if (auth?.currentUser) saveInventory(auth.currentUser.uid);
+  updateLeaderboard();
+}
+
+// ------------------ GAME LOOP ------------------
+
 function update() {
   player.isMoving = false;
 
+  // FISHING LOGIC
   if (player.isFishing) {
     if (player.casting) {
       player.castTimer++;
@@ -435,40 +447,37 @@ function update() {
     if (player.fishingTimer >= player.fishingDuration) {
       player.isFishing = false;
       player.fishingTimer = 0;
-      addItem("fish", "Fish", 1);
-      player.exp += 100;
 
-      expPopups.push({ x: player.x + player.width / 2, y: player.y, text: "+100 EXP", alpha: 1 });
+      addItem("fish", "Fish");
 
-      if (auth?.currentUser) {
-        saveInventory(auth.currentUser.uid);
-        updateLeaderboard();
-      }
+      // ✅ Give EXP and update leaderboard
+      gainExp(100);
     }
-    return;
+    return; // skip movement while fishing
   }
 
+  // MOVEMENT
   if (keys.arrowright) { player.x += player.speed; player.direction = "right"; player.isMoving = true; }
-  if (keys.arrowleft) { player.x -= player.speed; player.direction = "left"; player.isMoving = true; }
+  if (keys.arrowleft)  { player.x -= player.speed; player.direction = "left"; player.isMoving = true; }
 
   if (player.isMoving) {
     player.animationTimer++;
     if (player.animationTimer >= 10) { player.animationFrame = (player.animationFrame + 1) % 2; player.animationTimer = 0; }
   } else { player.animationFrame = 0; player.animationTimer = 0; }
 
-  if (
-    keys.f &&
-    player.equipped.hand?.id === "rod" &&
-    player.x + player.width > waterZone.x &&
-    player.x < waterZone.x + waterZone.width &&
-    player.y + player.height > waterZone.y &&
-    player.y < waterZone.y + waterZone.height
-  ) {
+  // CASTING FISH
+  if (keys.f &&
+      player.equipped.hand?.id === "rod" &&
+      player.x + player.width > waterZone.x &&
+      player.x < waterZone.x + waterZone.width &&
+      player.y + player.height > waterZone.y &&
+      player.y < waterZone.y + waterZone.height) {
     player.isFishing = true;
     player.casting = true;
     player.castTimer = 0;
   }
 
+  // PICKUP ITEMS
   items.forEach(item => {
     if (item.collected) return;
     const hit = player.x < item.x + item.size &&
@@ -481,12 +490,14 @@ function update() {
   player.x = Math.max(0, Math.min(canvas.width - player.width, player.x));
 }
 
+// ------------------ DRAW ------------------
+
 function drawPlayer() {
   const sprite = player.isFishing ? sprites.fishing :
                  player.isMoving ? (player.animationFrame === 0 ? sprites.walk1 : sprites.walk2) : sprites.idle;
 
   ctx.save();
-  const facingLeft = player.direction === "right";
+  const facingLeft = player.direction === "left"; // FIXED HAT FACING
 
   const drawHat = () => {
     const hat = player.equipped.hat; if (!hat) return;
@@ -512,7 +523,8 @@ function drawPlayer() {
   };
 
   if (facingLeft) {
-    ctx.translate(player.x + player.width, player.y); ctx.scale(-1, 1);
+    ctx.translate(player.x + player.width, player.y);
+    ctx.scale(-1, 1);
     ctx.drawImage(sprite, 0, 0, player.width, player.height);
     ctx.save(); ctx.translate(player.width, 0); ctx.scale(-1, 1); drawHat(); drawHandItem(); ctx.restore();
   } else {
@@ -543,6 +555,8 @@ function drawUI() {
   }
 }
 
+// ------------------ GAME LOOP ------------------
+
 function loop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   update();
@@ -553,6 +567,7 @@ function loop() {
   requestAnimationFrame(loop);
 }
 loop();
+
 
 </script>
 
@@ -1127,6 +1142,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
