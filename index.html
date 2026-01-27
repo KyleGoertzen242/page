@@ -497,7 +497,7 @@ function drawPlayer() {
                  player.isMoving ? (player.animationFrame === 0 ? sprites.walk1 : sprites.walk2) : sprites.idle;
 
   ctx.save();
-  const facingLeft = player.direction === "left"; // FIXED HAT FACING
+  const facingLeft = player.direction === "right"; // FIXED HAT FACING
 
   const drawHat = () => {
     const hat = player.equipped.hat; if (!hat) return;
@@ -1142,6 +1142,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
