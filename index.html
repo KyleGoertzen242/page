@@ -431,21 +431,22 @@ onAuthStateChanged(auth, user => {
     updateEquippedUI(); 
   }
 
-  // ---------------- Real-time Leaderboard Listener ----------------
-  onSnapshot(collection(db, "users"), snapshot => {
-    const leaderboard = [];
-
-    snapshot.forEach(doc => {
-      const d = doc.data();
-      leaderboard.push({ name: d.name || "Unknown", exp: d.exp || 0 });
-    });
-
-    // Include local player if not logged in
-    if (!auth?.currentUser) leaderboard.push({ name: "Unknown", exp: player.exp });
-
-    leaderboard.sort((a, b) => b.exp - a.exp);
-    updateLeaderboardUI(leaderboard.slice(0, 10));
-  });
+	onSnapshot(collection(db, "users"), snapshot => {
+	    const leaderboard = [];
+	
+	    snapshot.forEach(doc => {
+	        const d = doc.data();
+	        // Show only the part before @, fallback to "Unknown"
+	        const displayName = d.email ? d.email.split("@")[0] : "Unknown";
+	        leaderboard.push({ name: displayName, exp: d.exp || 0 });
+	    });
+	
+	    // Include local player if not logged in
+	    if (!auth.currentUser) leaderboard.push({ name: "Unknown", exp: player.exp });
+	
+	    leaderboard.sort((a, b) => b.exp - a.exp);
+	    updateLeaderboardUI(leaderboard.slice(0, 10));
+	});
 });
 
 
@@ -1183,6 +1184,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
