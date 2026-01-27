@@ -251,67 +251,86 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
 const keys = {};
-window.addEventListener("keydown", e => keys[e.key] = true);
-window.addEventListener("keyup", e => keys[e.key] = false);
+window.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
+window.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
 
 const sprites = {
   idle: new Image(),
   walk1: new Image(),
-  walk2: new Image()
+  walk2: new Image(),
+  fishing: new Image()
 };
 sprites.idle.src = "idle.png";
 sprites.walk1.src = "walk1.png";
 sprites.walk2.src = "walk2.png";
+sprites.fishing.src = "idle.png";
 
 const itemSprites = {
   hat: new Image(),
-  blue_hat: new Image()
+  blue_hat: new Image(),
+  rod: new Image(),
+  fish: new Image()
 };
 itemSprites.hat.src = "hat.png";
 itemSprites.blue_hat.src = "blue_hat.png";
+itemSprites.rod.src = "rod.png";
+itemSprites.fish.src = "fish.png";
 
-let player = {
-  x: 200,
-  y: 270,
-  width: 55,
-  height: 84,
-  direction: "left",
-  speed: 4,
-  inventory: [],
-  equipped: { hat: null },
-  animationFrame: 0,
-  animationTimer: 0,
-  isMoving: false
+const hatOffsets = {
+  hat: { x: 10, y: -20, w: 25, h: 40 },
+  blue_hat: { x: 10, y: -20, w: 25, h: 40 }
 };
 
+const handOffsets = {
+  rod: {
+    right: { x: 35, y: 20, w: 40, h: 40, rot: 0.2 },
+    left: { x: 20, y: 40, w: 40, h: 40, rot: -0.2 }
+  }
+};
+
+let player = {
+  x: 200, y: 270, width: 55, height: 84, speed: 4, direction: "right",
+  inventory: [], equipped: { hat: null, hand: null },
+  animationFrame: 0, animationTimer: 0, isMoving: false,
+  isFishing: false, fishingTimer: 0, fishingDuration: 0,
+  casting: false, castTimer: 0, castDuration: 30, exp: 0
+};
+
+const expPopups = []; // {x, y, text, alpha}
+
+const waterZone = { x: 400, y: 300, width: 200, height: 80 };
 const items = [
   { id: "hat", name: "Red Hat", x: 600, y: 300, size: 20, collected: false },
-  { id: "blue_hat", name: "Blue Hat", x: 500, y: 300, size: 20, collected: false }
+  { id: "blue_hat", name: "Blue Hat", x: 650, y: 300, size: 20, collected: false },
+  { id: "rod", name: "Fishing Rod", x: 300, y: 300, size: 20, collected: false }
 ];
 
 const hasItem = id => player.inventory.some(i => i.id === id);
 
-async function loadInventory(uid) {
-  const snap = await getDoc(doc(db, "users", uid));
-  if (!snap.exists()) return;
-
-  const data = snap.data();
-  player.inventory = data.inventory || [];
-  player.equipped = data.equipped || { hat: null };
-
-  items.forEach(item => {
-    if (hasItem(item.id)) item.collected = true;
-  });
-
+function addItem(id, name) {
+  if (id === "fish") {
+    const existing = player.inventory.find(i => i.id === "fish");
+    if (existing) {
+      existing.qty = (existing.qty || 1) + 1;
+    } else {
+      player.inventory.push({ id, name, qty: 1 });
+    }
+  } else {
+    if (!player.inventory.some(i => i.id === id)) {
+      player.inventory.push({ id, name });
+    }
+  }
   updateInventoryUI();
   updateEquippedUI();
+  if (auth?.currentUser) saveInventory(auth.currentUser.uid);
 }
 
-async function saveInventory(uid) {
-  await updateDoc(doc(db, "users", uid), {
-    inventory: player.inventory,
-    equipped: player.equipped
-  });
+function toggleEquip(item) {
+  if (item.id === "fish") return;
+  const slot = item.id === "rod" ? "hand" : "hat";
+  player.equipped[slot] = player.equipped[slot]?.id === item.id ? null : item;
+  updateEquippedUI();
+  if (auth?.currentUser) saveInventory(auth.currentUser.uid);
 }
 
 function updateInventoryUI() {
@@ -320,18 +339,34 @@ function updateInventoryUI() {
 
   player.inventory.forEach(item => {
     const btn = document.createElement("button");
-    btn.textContent = item.name;
-    btn.style.display = "block";
+    btn.style.display = "flex";
+    btn.style.alignItems = "center";
     btn.style.marginBottom = "6px";
+
+    const img = document.createElement("img");
+    img.src = itemSprites[item.id].src;
+    img.width = 24;
+    img.height = 24;
+    img.style.marginRight = "6px";
+    btn.appendChild(img);
+
+    const text = document.createElement("span");
+    if (item.id === "fish") {
+      text.textContent = `${item.name} x${item.qty || 1}`;
+    } else {
+      text.textContent = item.name;
+    }
+    btn.appendChild(text);
+
     btn.onclick = () => toggleEquip(item);
     invDiv.appendChild(btn);
   });
 }
 
+
 function updateEquippedUI() {
   const eqDiv = document.getElementById("equippedList");
   if (!eqDiv) return;
-
   eqDiv.innerHTML = "";
   Object.entries(player.equipped).forEach(([slot, item]) => {
     const div = document.createElement("div");
@@ -340,144 +375,185 @@ function updateEquippedUI() {
   });
 }
 
-function toggleEquip(item) {
-  const slot = "hat";
-
-  player.equipped[slot] =
-    player.equipped[slot]?.id === item.id ? null : item;
-
-  updateEquippedUI();
-  if (auth.currentUser) saveInventory(auth.currentUser.uid);
+function updateLeaderboardUI(data) {
+  const lbDiv = document.getElementById("leaderboard");
+  if (!lbDiv) return;
+  lbDiv.innerHTML = "<h3>Leaderboard</h3>";
+  data.forEach((u, i) => {
+    const div = document.createElement("div");
+    div.textContent = `${i + 1}. ${u.name}: ${u.exp} EXP`;
+    lbDiv.appendChild(div);
+  });
 }
+
+async function loadInventory(uid) {
+  const snap = await getDoc(doc(db, "users", uid));
+  if (!snap.exists()) return;
+  const data = snap.data();
+  player.inventory = data.inventory || [];
+  player.equipped = data.equipped || { hat: null, hand: null };
+  player.exp = data.exp || 0;
+  updateInventoryUI();
+  updateEquippedUI();
+}
+
+async function saveInventory(uid) {
+  await updateDoc(doc(db, "users", uid), { inventory: player.inventory, equipped: player.equipped, exp: player.exp });
+}
+
+async function updateLeaderboard() {
+  const usersSnap = await getDocs(collection(db, "users"));
+  const leaderboard = [];
+  usersSnap.forEach(doc => {
+    const d = doc.data();
+    leaderboard.push({ name: d.name || "Unknown", exp: d.exp || 0 });
+  });
+  leaderboard.sort((a, b) => b.exp - a.exp);
+  updateLeaderboardUI(leaderboard.slice(0, 10));
+}
+
+onAuthStateChanged(auth, user => {
+  if (user) { loadInventory(user.uid); updateLeaderboard(); }
+  else { player.inventory = []; player.equipped = { hat: null, hand: null }; player.exp = 0; updateInventoryUI(); updateEquippedUI(); }
+});
 
 function update() {
   player.isMoving = false;
 
-  if (keys.ArrowRight) {
-    player.x += player.speed;
-    player.direction = "left";
-    player.isMoving = true;
+  if (player.isFishing) {
+    if (player.casting) {
+      player.castTimer++;
+      if (player.castTimer >= player.castDuration) {
+        player.casting = false;
+        player.fishingTimer = 0;
+        player.fishingDuration = Math.floor(Math.random() * 10 + 1) * 60;
+      }
+      return;
+    }
+
+    player.fishingTimer++;
+    if (player.fishingTimer >= player.fishingDuration) {
+      player.isFishing = false;
+      player.fishingTimer = 0;
+      addItem("fish", "Fish", 1);
+      player.exp += 100;
+
+      expPopups.push({ x: player.x + player.width / 2, y: player.y, text: "+100 EXP", alpha: 1 });
+
+      if (auth?.currentUser) {
+        saveInventory(auth.currentUser.uid);
+        updateLeaderboard();
+      }
+    }
+    return;
   }
-  if (keys.ArrowLeft) {
-    player.x -= player.speed;
-    player.direction = "right";
-    player.isMoving = true;
-  }
+
+  if (keys.arrowright) { player.x += player.speed; player.direction = "right"; player.isMoving = true; }
+  if (keys.arrowleft) { player.x -= player.speed; player.direction = "left"; player.isMoving = true; }
 
   if (player.isMoving) {
     player.animationTimer++;
-    if (player.animationTimer >= 10) {
-      player.animationFrame = (player.animationFrame + 1) % 2;
-      player.animationTimer = 0;
-    }
-  } else {
-    player.animationFrame = 0;
-    player.animationTimer = 0;
+    if (player.animationTimer >= 10) { player.animationFrame = (player.animationFrame + 1) % 2; player.animationTimer = 0; }
+  } else { player.animationFrame = 0; player.animationTimer = 0; }
+
+  if (
+    keys.f &&
+    player.equipped.hand?.id === "rod" &&
+    player.x + player.width > waterZone.x &&
+    player.x < waterZone.x + waterZone.width &&
+    player.y + player.height > waterZone.y &&
+    player.y < waterZone.y + waterZone.height
+  ) {
+    player.isFishing = true;
+    player.casting = true;
+    player.castTimer = 0;
   }
 
-  items.forEach(async item => {
+  items.forEach(item => {
     if (item.collected) return;
-
-    const hit =
-      player.x < item.x + item.size &&
-      player.x + player.width > item.x &&
-      player.y < item.y + item.size &&
-      player.y + player.height > item.y;
-
-    if (hit && !hasItem(item.id)) {
-      item.collected = true;
-
-      player.inventory.push({
-        id: item.id,
-        name: item.name
-      });
-
-      updateInventoryUI();
-      updateEquippedUI();
-
-      if (auth.currentUser) await saveInventory(auth.currentUser.uid);
-    }
+    const hit = player.x < item.x + item.size &&
+                player.x + player.width > item.x &&
+                player.y < item.y + item.size &&
+                player.y + player.height > item.y;
+    if (hit) { item.collected = true; addItem(item.id, item.name); }
   });
 
   player.x = Math.max(0, Math.min(canvas.width - player.width, player.x));
 }
 
 function drawPlayer() {
-  const sprite = player.isMoving
-    ? (player.animationFrame === 0 ? sprites.walk1 : sprites.walk2)
-    : sprites.idle;
+  const sprite = player.isFishing ? sprites.fishing :
+                 player.isMoving ? (player.animationFrame === 0 ? sprites.walk1 : sprites.walk2) : sprites.idle;
 
   ctx.save();
+  const facingLeft = player.direction === "right";
 
   const drawHat = () => {
-    if (!player.equipped.hat) return;
-
-    const hatSprite = itemSprites[player.equipped.hat.id];
-    ctx.drawImage(hatSprite, -10, 0, 25, 40);
+    const hat = player.equipped.hat; if (!hat) return;
+    const off = hatOffsets[hat.id]; if (!off) return;
+    ctx.drawImage(itemSprites[hat.id], off.x, off.y, off.w, off.h);
   };
 
-  if (player.direction === "left") {
-    ctx.translate(player.x + player.width, player.y);
-    ctx.scale(-1, 1);
+  const drawHandItem = () => {
+    const hand = player.equipped.hand; if (!hand) return;
+    const off = handOffsets[hand.id]; if (!off) return;
+    const data = facingLeft ? off.left : off.right;
 
-    ctx.drawImage(sprite, 0, 0, player.width, player.height);
-
-    if (player.equipped.hat) {
-      ctx.save();
-      ctx.translate(10 + 25, -20);
-      ctx.scale(-1, 1);
-      drawHat();
-      ctx.restore();
+    ctx.save();
+    ctx.translate(data.x, data.y);
+    let rot = data.rot;
+    if (player.casting) {
+      const progress = player.castTimer / player.castDuration;
+      rot += (facingLeft ? -1 : 1) * Math.sin(progress * Math.PI) * 0.5;
     }
+    ctx.rotate(rot);
+    ctx.drawImage(itemSprites[hand.id], 0, 0, data.w, data.h);
+    ctx.restore();
+  };
 
+  if (facingLeft) {
+    ctx.translate(player.x + player.width, player.y); ctx.scale(-1, 1);
+    ctx.drawImage(sprite, 0, 0, player.width, player.height);
+    ctx.save(); ctx.translate(player.width, 0); ctx.scale(-1, 1); drawHat(); drawHandItem(); ctx.restore();
   } else {
     ctx.drawImage(sprite, player.x, player.y, player.width, player.height);
-
-    if (player.equipped.hat) {
-      ctx.save();
-      ctx.translate(player.x + 10 + 25, player.y - 20);
-      ctx.scale(-1, 1);
-      drawHat();
-      ctx.restore();
-    }
+    ctx.save(); ctx.translate(player.x, player.y); drawHat(); drawHandItem(); ctx.restore();
   }
 
   ctx.restore();
 }
 
+function drawItems() { items.forEach(item => { if (!item.collected) ctx.drawImage(itemSprites[item.id], item.x, item.y, item.size, item.size); }); }
+function drawWater() { ctx.fillStyle = "#3aa0ff"; ctx.fillRect(waterZone.x, waterZone.y, waterZone.width, waterZone.height); }
 
-function drawItems() {
-  items.forEach(item => {
-    if (!item.collected) {
-      ctx.drawImage(
-        itemSprites[item.id],
-        item.x,
-        item.y,
-        item.size,
-        item.size
-      );
-    }
-  });
+function drawUI() {
+  ctx.fillStyle = "red";
+  ctx.font = "18px Arial";
+  ctx.fillText(`EXP: ${player.exp}`, 20, 30);
+
+  // Floating EXP popups
+  for (let i = expPopups.length - 1; i >= 0; i--) {
+    const p = expPopups[i];
+    ctx.globalAlpha = p.alpha;
+    ctx.fillText(p.text, p.x, p.y);
+    ctx.globalAlpha = 1;
+    p.y -= 0.7;
+    p.alpha -= 0.02;
+    if (p.alpha <= 0) expPopups.splice(i, 1);
+  }
 }
 
 function loop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   update();
+  drawWater();
   drawItems();
   drawPlayer();
+  drawUI();
   requestAnimationFrame(loop);
 }
 loop();
 
-onAuthStateChanged(auth, user => {
-  if (user) loadInventory(user.uid);
-  else {
-    player.inventory = [];
-    player.equipped = { hat: null };
-    updateInventoryUI();
-    updateEquippedUI();
-  }
-});
 </script>
 
 <div style="display:flex; gap:20px;">
@@ -503,6 +579,10 @@ onAuthStateChanged(auth, user => {
 
     <button id="sendBtn">Send</button>
   </div>
+</div>
+
+<div id="leaderboard" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.5); color: white; padding: 10px; border-radius: 6px; width: 180px;">
+  <h3>Leaderboard</h3>
 </div>
 
 <div id="ui">
