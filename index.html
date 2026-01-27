@@ -231,7 +231,7 @@ pre {
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 import {
-  getFirestore, doc, getDoc, setDoc, updateDoc
+  getFirestore, doc, getDoc, setDoc, updateDoc, collection, onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -1165,6 +1165,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
