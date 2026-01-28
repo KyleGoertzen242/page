@@ -169,11 +169,6 @@ pre {
     if (!user && currentPath !== '/index.html') {
       window.location.replace("/index.html"); // safer than href
     }
-    
-    // Optional: redirect logged-in users away from login page
-    if (user && currentPath === '/index.html') {
-      window.location.replace("/index.html"); // or your main page
-    }
   });
 </script>
 
@@ -1192,6 +1187,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
