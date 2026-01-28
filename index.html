@@ -456,7 +456,6 @@ function gainExp(amount) {
   player.exp += amount;
   expPopups.push({ x: player.x + player.width / 2, y: player.y, text: `+${amount} EXP`, alpha: 1 });
   if (auth?.currentUser) saveInventory(auth.currentUser.uid);
-  updateLeaderboard();
 }
 
 // ------------------ GAME LOOP ------------------
@@ -1185,6 +1184,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
