@@ -281,6 +281,15 @@ const buttons = {
   fish:  { x: canvas.width - 80, y: canvas.height - 80, w: 60, h: 60, key: "f", label: "F" }
 };
 
+/* ================= MOBILE INPUT ================= */
+
+// On-screen buttons
+const buttons = {
+  left:  { x: 20,  y: canvas.height - 80, w: 60, h: 60, key: "arrowleft",  label: "◀" },
+  right: { x: 100, y: canvas.height - 80, w: 60, h: 60, key: "arrowright", label: "▶" },
+  fish:  { x: canvas.width - 80, y: canvas.height - 80, w: 60, h: 60, key: "f", label: "F" }
+};
+
 function handleTouch(e, down) {
   const rect = canvas.getBoundingClientRect();
 
@@ -305,10 +314,12 @@ canvas.addEventListener("touchstart", e => {
   handleTouch(e, true);
 });
 
+// On touchend, **clear all button keys** so character stops moving
 canvas.addEventListener("touchend", e => {
   e.preventDefault();
-  handleTouch(e, false);
+  Object.values(buttons).forEach(b => keys[b.key] = false);
 });
+
 
 
 const keys = {};
@@ -635,6 +646,7 @@ function drawButtons() {
 }
 
 
+
 function drawItems() { 
   items.forEach(item => { 
     if (!player.collectedItems.includes(item.id)) ctx.drawImage(itemSprites[item.id], item.x, item.y, item.size, item.size); 
@@ -646,7 +658,7 @@ function drawWater() { ctx.fillStyle = "#3aa0ff"; ctx.fillRect(waterZone.x, wate
 function drawUI() {
   ctx.fillStyle = "red";
   ctx.font = "18px Arial";
-  ctx.fillText(`EXP: ${player.exp}`, 20, 30);
+  ctx.fillText(`EXP: ${player.exp}`, 60, 30);
 
   // EXP popups
   for (let i = expPopups.length - 1; i >= 0; i--) {
@@ -1248,6 +1260,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
