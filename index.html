@@ -272,6 +272,45 @@ const db = getFirestore(app);
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
+/* ================= MOBILE INPUT ================= */
+
+// On-screen buttons
+const buttons = {
+  left:  { x: 20,  y: canvas.height - 80, w: 60, h: 60, key: "arrowleft",  label: "◀" },
+  right: { x: 100, y: canvas.height - 80, w: 60, h: 60, key: "arrowright", label: "▶" },
+  fish:  { x: canvas.width - 80, y: canvas.height - 80, w: 60, h: 60, key: "f", label: "F" }
+};
+
+function handleTouch(e, down) {
+  const rect = canvas.getBoundingClientRect();
+
+  for (const t of e.touches) {
+    const x = t.clientX - rect.left;
+    const y = t.clientY - rect.top;
+
+    Object.values(buttons).forEach(b => {
+      if (
+        x > b.x && x < b.x + b.w &&
+        y > b.y && y < b.y + b.h
+      ) {
+        keys[b.key] = down;
+      }
+    });
+  }
+}
+
+// Touch listeners
+canvas.addEventListener("touchstart", e => {
+  e.preventDefault();
+  handleTouch(e, true);
+});
+
+canvas.addEventListener("touchend", e => {
+  e.preventDefault();
+  handleTouch(e, false);
+});
+
+
 const keys = {};
 window.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
 window.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
@@ -425,8 +464,7 @@ async function saveInventory(uid) {
 // ------------------ AUTH ------------------
 onAuthStateChanged(auth, user => {
   if (user) { 
-    loadInventory(user.uid); 
-    // remove updateLeaderboard(); <-- we no longer need it
+    loadInventory(user.uid);
   } else { 
     player.inventory = []; 
     player.equipped = { hat: null, hand: null }; 
@@ -579,6 +617,24 @@ function drawPlayer() {
   ctx.restore();
 }
 
+function drawButtons() {
+  ctx.globalAlpha = 0.7;
+
+  Object.values(buttons).forEach(b => {
+    ctx.fillStyle = "#000";
+    ctx.fillRect(b.x, b.y, b.w, b.h);
+
+    ctx.fillStyle = "#fff";
+    ctx.font = "28px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(b.label, b.x + b.w / 2, b.y + b.h / 2);
+  });
+
+  ctx.globalAlpha = 1;
+}
+
+
 function drawItems() { 
   items.forEach(item => { 
     if (!player.collectedItems.includes(item.id)) ctx.drawImage(itemSprites[item.id], item.x, item.y, item.size, item.size); 
@@ -612,6 +668,7 @@ function loop() {
   drawItems();
   drawPlayer();
   drawUI();
+  drawButtons();
   requestAnimationFrame(loop);
 }
 loop();
@@ -1191,6 +1248,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
