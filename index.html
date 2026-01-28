@@ -299,8 +299,8 @@ itemSprites.rod.src = "rod.png";
 itemSprites.fish.src = "fish.png";
 
 const hatOffsets = {
-  hat: { x: 10, y: -20, w: 25, h: 40 },
-  blue_hat: { x: 10, y: -20, w: 25, h: 40 }
+  hat: { x: -10, y: -20, w: 25, h: 40 },
+  blue_hat: { x: -10, y: -20, w: 25, h: 40 }
 };
 
 const handOffsets = {
@@ -542,7 +542,11 @@ function drawPlayer() {
   const drawHat = () => {
     const hat = player.equipped.hat; if (!hat) return;
     const off = hatOffsets[hat.id]; if (!off) return;
-    ctx.drawImage(itemSprites[hat.id], off.x, off.y, off.w, off.h);
+	if (facingLeft) {
+		ctx.drawImage(itemSprites[hat.id], -off.x, off.y, off.w, off.h);
+	} else {
+		ctx.drawImage(itemSprites[hat.id], off.x-30, off.y, off.w, off.h);
+	}
   };
 
   const drawHandItem = () => {
@@ -569,7 +573,7 @@ function drawPlayer() {
     ctx.save(); ctx.translate(player.width, 0); ctx.scale(-1, 1); drawHat(); drawHandItem(); ctx.restore();
   } else {
     ctx.drawImage(sprite, player.x, player.y, player.width, player.height);
-    ctx.save(); ctx.translate(player.x, player.y); drawHat(); drawHandItem(); ctx.restore();
+    ctx.save(); ctx.translate(player.x, player.y); ctx.scale(-1, 1); drawHat(); drawHandItem(); ctx.restore();
   }
 
   ctx.restore();
@@ -1187,6 +1191,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
