@@ -163,8 +163,8 @@ pre {
 
   // Auth state listener
 	onAuthStateChanged(auth, user => {
-	  if (!user && window.location.pathname !== "/index.html") {
-	    window.location.href = "/index.html"; 
+	  if (!user && window.location.pathname !== "/") {
+	    window.location.href = "/"; 
 	  }
 	});
 
@@ -1185,6 +1185,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
