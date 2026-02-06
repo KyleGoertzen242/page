@@ -7,6 +7,8 @@
 	<meta charset="UTF-8">
     <title>Bank</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+	<link rel="stylesheet" href="page.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
 body {
     background-color: #ffffff;
@@ -112,7 +114,22 @@ pre {
     </style>
 </head>
 <body>
+<header id="fcf-header">
+  <div class="fcf-left">
+    <img src="favicon.ico" class="fcf-logo">
+    <span class="fcf-title">FriendCodeForum</span>
+  </div>
 
+  <nav class="fcf-nav">
+    <a href="/">Home</a>
+  </nav>
+
+  <div class="fcf-auth">
+    <span id="userLabel">Guest</span>
+    <button id="googleLogin" class="primary">Login</button>
+    <button id="logout" class="danger">Logout</button>
+  </div>
+</header>
 <section id="about-us">
   <h2>About Us</h2>
   <p>
@@ -1381,6 +1398,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
