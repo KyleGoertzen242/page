@@ -70,7 +70,7 @@
 }
 
 #messages {
-    background-color: white;
+    background-color: #000000;
     padding: 10px;
     border-radius: 8px;
     height: 300px;
@@ -199,3 +199,4 @@ textarea {
     font-weight: bold;
     color: #2f3640;
 }
+
