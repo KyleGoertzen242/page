@@ -190,17 +190,6 @@ textarea {
     color: #2f3640;
 }
 
-/* Canvas styling */
-#game {
-    width: 100%;              /* full viewport width */
-    height: calc(100vh - 60px); /* full viewport height minus header height */
-    display: block;
-    background-color: #ffffff;
-    border-radius: 0;           /* remove rounding if you want full fill */
-    box-shadow: none;           /* optional: remove shadow for full-screen effect */
-    object-fit: cover; 
-}
-
 /* Tablet: min-width 600px */
 @media (min-width: 600px) {
     #fcf-header {
@@ -295,16 +284,6 @@ textarea {
         border-radius: 8px;
         flex: 1;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    #game {
-        width: 100%;              /* full viewport width */
-        height: calc(100vh - 60px); /* full viewport height minus header height */
-        display: block;
-        background-color: #ffffff;
-        border-radius: 0;           /* remove rounding if you want full fill */
-        box-shadow: none;           /* optional: remove shadow for full-screen effect */
-        object-fit: cover; 
     }
 }
 
@@ -403,16 +382,6 @@ textarea {
         flex: 1;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-
-    #game {
-        width: 100%;              /* full viewport width */
-        height: calc(100vh - 60px); /* full viewport height minus header height */
-        display: block;
-        background-color: #ffffff;
-        border-radius: 0;           /* remove rounding if you want full fill */
-        box-shadow: none;           /* optional: remove shadow for full-screen effect */
-        object-fit: cover; 
-    }
 }
 
 /* Desktop: min-width 1024px */
@@ -509,16 +478,6 @@ textarea {
         border-radius: 8px;
         flex: 1;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    #game {
-        width: 100%;              /* full viewport width */
-        height: calc(100vh - 60px); /* full viewport height minus header height */
-        display: block;
-        background-color: #ffffff;
-        border-radius: 0;           /* remove rounding if you want full fill */
-        box-shadow: none;           /* optional: remove shadow for full-screen effect */
-        object-fit: cover; 
     }
 }
 
@@ -617,17 +576,8 @@ textarea {
         flex: 1;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-
-    #game {
-        width: 100%;              /* full viewport width */
-        height: calc(100vh - 60px); /* full viewport height minus header height */
-        display: block;
-        background-color: #ffffff;
-        border-radius: 0;           /* remove rounding if you want full fill */
-        box-shadow: none;           /* optional: remove shadow for full-screen effect */
-        object-fit: cover; 
-    }
 }
+
 
 
 
