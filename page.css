@@ -192,7 +192,7 @@ textarea {
 
 /* Canvas styling */
 #game {
-    width: 100vw;              /* full viewport width */
+    width: 100%;              /* full viewport width */
     height: calc(100vh - 60px); /* full viewport height minus header height */
     display: block;
     background-color: #ffffff;
@@ -298,7 +298,7 @@ textarea {
     }
 
     #game {
-        width: 100vw;              /* full viewport width */
+        width: 100%;              /* full viewport width */
         height: calc(100vh - 60px); /* full viewport height minus header height */
         display: block;
         background-color: #ffffff;
@@ -405,7 +405,7 @@ textarea {
     }
 
     #game {
-        width: 100vw;              /* full viewport width */
+        width: 100%;              /* full viewport width */
         height: calc(100vh - 60px); /* full viewport height minus header height */
         display: block;
         background-color: #ffffff;
@@ -512,7 +512,7 @@ textarea {
     }
 
     #game {
-        width: 100vw;              /* full viewport width */
+        width: 100%;              /* full viewport width */
         height: calc(100vh - 60px); /* full viewport height minus header height */
         display: block;
         background-color: #ffffff;
@@ -619,7 +619,7 @@ textarea {
     }
 
     #game {
-        width: 100vw;              /* full viewport width */
+        width: 100%;              /* full viewport width */
         height: calc(100vh - 60px); /* full viewport height minus header height */
         display: block;
         background-color: #ffffff;
@@ -628,6 +628,7 @@ textarea {
         object-fit: cover; 
     }
 }
+
 
 
 
