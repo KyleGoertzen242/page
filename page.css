@@ -12,29 +12,6 @@ body {
     color: #2f3640;
 }
 
-/* Make main containers fixed width but centered */
-#layout, 
-#main-layout, 
-#ads {
-    max-width: 1200px;  /* maximum width to constrain layout */
-    width: 100%;        /* allow them to shrink on smaller screens */
-    margin-left: auto;
-    margin-right: auto;  /* centers the element horizontally */
-    box-sizing: border-box; /* includes padding/border in width */
-}
-
-/* Optional: make sure child elements don't overflow */
-#layout > *,
-#main-layout > *,
-#ads > * {
-    max-width: 100%;
-}
-
-/* Keep the body and header fluid so header and other components still span full width */
-body, header, #instant-messaging, #game {
-    width: 100%;
-}
-
 
 /* Mobile-first (default) styles */
 
@@ -651,5 +628,6 @@ textarea {
         object-fit: cover; 
     }
 }
+
 
 
