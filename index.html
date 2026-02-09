@@ -214,6 +214,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const canvas = document.getElementById("game");
+let accountLoaded = false;	
 const ctx = canvas.getContext("2d");
 
 /* ================= MOBILE INPUT ================= */
@@ -399,6 +400,7 @@ async function loadInventory(uid) {
   player.collectedItems = data.collectedItems || [];
   updateInventoryUI();
   updateEquippedUI();
+  accountLoaded = true;	
 }
 
 async function saveInventory(uid) {
@@ -420,6 +422,7 @@ onAuthStateChanged(auth, user => {
     player.exp = 0; 
     updateInventoryUI(); 
     updateEquippedUI(); 
+	accountLoaded = true;
   }
 
 	onSnapshot(collection(db, "users"), snapshot => {
@@ -450,6 +453,7 @@ function gainExp(amount) {
 
 // ------------------ GAME LOOP ------------------
 function update() {
+  if (!accountLoaded) return;
   player.isMoving = false;
 
   // FISHING
@@ -717,6 +721,10 @@ function drawItems() {
 function drawWater() { ctx.fillStyle = "#3aa0ff"; ctx.fillRect(waterZone.x, waterZone.y, waterZone.width, waterZone.height); }
 
 function drawUI() {
+  if (!accountLoaded) {
+    ctx.fillText("Loading...", 20, 30);
+    return;
+  }
   ctx.fillStyle = "red";
   ctx.font = "18px Arial";
   ctx.fillText(`EXP: ${player.exp}`, 60, 30);
@@ -1322,6 +1330,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
