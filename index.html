@@ -214,7 +214,9 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const canvas = document.getElementById("game");
-let accountLoaded = false;	
+let accountLoaded = false;
+let isAuthReady = false;
+let isSavingBlocked = false;
 const ctx = canvas.getContext("2d");
 
 /* ================= MOBILE INPUT ================= */
@@ -404,6 +406,7 @@ async function loadInventory(uid) {
 }
 
 async function saveInventory(uid) {
+  if (!isAuthReady || isSavingBlocked) return;
   await updateDoc(doc(db, "users", uid), {
     inventory: player.inventory,
     equipped: player.equipped,
@@ -413,40 +416,52 @@ async function saveInventory(uid) {
 }
 
 // ------------------ AUTH ------------------
-onAuthStateChanged(auth, user => {
-  if (user) { 
-    loadInventory(user.uid);
-  } else { 
-    player.inventory = []; 
-    player.equipped = { hat: null, hand: null }; 
-    player.exp = 0; 
-    updateInventoryUI(); 
-    updateEquippedUI(); 
-	accountLoaded = true;
+onAuthStateChanged(auth, async user => {
+  // --- BLOCK saving / EXP until ready ---
+  isSavingBlocked = true;
+  isAuthReady = false;
+  accountLoaded = false;
+
+  // --- LOAD OR RESET PLAYER ---
+  if (user) {
+    await loadInventory(user.uid); // wait until Firestore finishes loading
+  } else {
+    player.inventory = [];
+    player.equipped = { hat: null, hand: null };
+    player.exp = 0;
+    player.collectedItems = [];
+    updateInventoryUI();
+    updateEquippedUI();
   }
 
-	onSnapshot(collection(db, "users"), snapshot => {
-	    const leaderboard = [];
-	
-	    snapshot.forEach(doc => {
-	        const d = doc.data();
-	        // Show only the part before @, fallback to "Unknown"
-	        const displayName = d.email ? d.email.split("@")[0] : "Unknown";
-	        leaderboard.push({ name: displayName, exp: d.exp || 0 });
-	    });
-	
-	    // Include local player if not logged in
-	    if (!auth.currentUser) leaderboard.push({ name: "Unknown", exp: player.exp });
-	
-	    leaderboard.sort((a, b) => b.exp - a.exp);
-	    updateLeaderboardUI(leaderboard.slice(0, 10));
-	});
+  // --- AUTH READY ---
+  isAuthReady = true;
+  accountLoaded = true;
+  isSavingBlocked = false;
+
+  // --- LEADERBOARD ---
+  onSnapshot(collection(db, "users"), snapshot => {
+    const leaderboard = [];
+
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      const displayName = d.email ? d.email.split("@")[0] : "Unknown";
+      leaderboard.push({ name: displayName, exp: d.exp || 0 });
+    });
+
+    // Include local player if not logged in
+    if (!auth.currentUser) leaderboard.push({ name: "Unknown", exp: player.exp });
+
+    leaderboard.sort((a, b) => b.exp - a.exp);
+    updateLeaderboardUI(leaderboard.slice(0, 10));
+  });
 });
+
 
 
 // ------------------ EXP ------------------
 function gainExp(amount) {
-  if (!accountLoaded) return;
+  if (!accountLoaded || !isAuthReady) return;
   player.exp += amount;
   expPopups.push({ x: player.x + player.width / 2, y: player.y, text: `+${amount} EXP`, alpha: 1 });
   if (auth?.currentUser) saveInventory(auth.currentUser.uid);
@@ -508,6 +523,7 @@ function update() {
 
   // PICKUP ITEMS
   items.forEach(item => {
+	if (!isAuthReady) return;
     if (player.collectedItems.includes(item.id)) return; // skip already collected
     const hit = player.x < item.x + item.size &&
                 player.x + player.width > item.x &&
@@ -1331,6 +1347,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
