@@ -9,7 +9,117 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 	<link rel="stylesheet" href="page.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
+	<style>
+/* =========================
+   FriendCodeForum.com CSS - Fully Responsive
+   ========================= */
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f4f6f8;
+    color: #333;
+    line-height: 1.6;
+    font-size: 16px;
+}
+
+/* Header & Navigation */
+header {
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 2vw 2vw;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    font-size: 5vw; /* scales with screen width */
+    letter-spacing: 1px;
+}
+
+nav {
+    background-color: #3e8e41;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 1vw 0;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 1vw;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: #c1ffc1;
+}
+
+/* Main Content */
+main {
+    width: 95%;
+    max-width: 1200px;
+    margin: 2vw auto;
+}
+
+/* Buttons */
+button, .btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 1vw 2vw;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1em;
+}
+
+button:hover, .btn:hover {
+    background-color: #45a049;
+}
+
+/* Forms */
+input, textarea {
+    width: 100%;
+    padding: 1vw;
+    margin: 1vw 0 2vw 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    resize: vertical;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.5vw;
+}
+
+/* Footer */
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 2vw 1vw;
+}
+
+footer a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Ads */
 #ad-container,
 #second-ad-container,
 #third-ad-container,
@@ -17,9 +127,10 @@
 #fifth-ad-container,
 #sixth-ad-container,
 #seventh-ad-container {
+    width: 100%;
+    max-width: 20vw; /* responsive width */
+    margin: 1vw auto;
     position: relative;
-    width: 140px;
-    height: 300px;
 }
 
 #ad-container img,
@@ -29,12 +140,8 @@
 #fifth-ad-container img,
 #sixth-ad-container img,
 #seventh-ad-container img {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 140px;
-    height: 300px;
-    transform: translate(-50%, -50%);
+    width: 100%;
+    height: auto;
     opacity: 0;
     transition: opacity 0.2s ease-in-out;
 }
@@ -53,25 +160,66 @@
 #ads {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 2vw;
+    align-items: center;
 }
 
+/* Messages & Colored Blocks */
 .message {
-    margin-top: 10px;
-    font-size: 14px;
-    color: #333333;
+    margin-top: 1vw;
+    font-size: 0.9em;
 }
 
 .colort {
-    margin-top: 20px;
-    text-align: left;
+    margin-top: 2vw;
     width: 100%;
     background-color: #fafafa;
     border-radius: 12px;
-    padding: 16px;
+    padding: 2vw;
     border: 1px solid #e5e5e5;
+    box-sizing: border-box;
 }
-    </style>
+
+/* Canvas */
+#game {
+    width: 100%;
+    max-width: 100%;
+    display: block;
+    margin: 5vw auto;
+    border: 0.5vw solid #fff;
+    border-radius: 2vw;
+    box-shadow: 0 0 4vw rgba(255,255,255,0.6), 0 0 2vw #aaa inset;
+    background: linear-gradient(to bottom, #f9f9f9, #e0e0e0);
+}
+
+/* Prevent horizontal scroll */
+html, body {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 7vw;
+    }
+
+    nav a {
+        margin: 2vw;
+        font-size: 4vw;
+    }
+
+    button, .btn {
+        padding: 2vw 4vw;
+        font-size: 4vw;
+    }
+
+    .colort {
+        padding: 4vw;
+    }
+}
+	</style>
+
 </head>
 <body>
 <header id="fcf-header">
@@ -269,6 +417,26 @@ let accountLoaded = false;
 let isAuthReady = false;
 let isSavingBlocked = false;
 const ctx = canvas.getContext("2d");
+
+const ASPECT_RATIO = 2; // 800 / 400
+
+function resizeCanvas() {
+    // Canvas width = 90% of container or screen width
+    const width = Math.min(window.innerWidth * 0.9, 800);
+    const height = width / ASPECT_RATIO;
+
+    canvas.width = width;
+    canvas.height = height;
+
+    // Optional: redraw your game here if needed
+    // e.g., ctx.clearRect(0, 0, width, height);
+}
+
+// Resize on page load
+resizeCanvas();
+
+// Resize on window resize
+window.addEventListener('resize', resizeCanvas);
 
 
 /* ================= MOBILE INPUT ================= */
@@ -1399,6 +1567,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
