@@ -261,26 +261,26 @@ const ctx = canvas.getContext("2d");
 function resizeCanvas() {
     const dpr = window.devicePixelRatio || 1;
 
-    // Use CSS layout width
-    const displayWidth = canvas.clientWidth;
-    const displayHeight = displayWidth / 2; // maintain 800:400 ratio
+    // Desired displayed width and height based on CSS
+    const width = canvas.clientWidth;
+    const height = width / 2; // maintain 800:400 ratio
 
-    // Set canvas CSS height
-    canvas.style.height = displayHeight + "px";
+    canvas.style.height = height + "px";
 
-    // Set actual pixel dimensions for sharpness
-    canvas.width = displayWidth * dpr;
-    canvas.height = displayHeight * dpr;
+    // Set actual pixel size for sharp rendering
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
 
-    // Reset transform and scale context
+    // Reset and scale context
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.scale(dpr, dpr);
 }
 
-// Run on load, resize, rotation
+// Call on load, resize, and rotation
 window.addEventListener("load", resizeCanvas);
 window.addEventListener("resize", resizeCanvas);
 window.addEventListener("orientationchange", resizeCanvas);
+
 
 
 /* ================= MOBILE INPUT ================= */
@@ -1411,6 +1411,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
