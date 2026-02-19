@@ -91,7 +91,6 @@ body {
     height: auto;
     aspect-ratio: 2 / 1;   /* keeps your 800x400 ratio */
     max-height: 70vh;
-    background: #000;
     border-radius: 20px;
     display: block;
     margin: 0 auto;
@@ -165,3 +164,4 @@ input, textarea {
         max-height: 50vh;
     }
 }
+
