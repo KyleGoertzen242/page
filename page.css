@@ -1,8 +1,5 @@
 html, body {
-    width: 100%;
-    overflow-x: hidden; /* Prevent horizontal scrolling */
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    overflow-x: hidden;
 }
 
 /* ==========================
@@ -19,3 +16,4 @@ html, body {
     top: 0;
     z-index: 1000;
 }
+
