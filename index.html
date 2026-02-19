@@ -258,28 +258,26 @@ let isAuthReady = false;
 let isSavingBlocked = false;
 const ctx = canvas.getContext("2d");
 
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
-
 function resizeCanvas() {
     const dpr = window.devicePixelRatio || 1;
 
-    // Desired displayed width and height based on CSS
-    const width = canvas.clientWidth;
-    const height = width / 2; // maintain 800:400 ratio
+    // Use CSS layout width
+    const displayWidth = canvas.clientWidth;
+    const displayHeight = displayWidth / 2; // maintain 800:400 ratio
 
-    canvas.style.height = height + "px";
+    // Set canvas CSS height
+    canvas.style.height = displayHeight + "px";
 
-    // Set actual pixel size for sharp rendering
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
+    // Set actual pixel dimensions for sharpness
+    canvas.width = displayWidth * dpr;
+    canvas.height = displayHeight * dpr;
 
-    // Reset and scale context
+    // Reset transform and scale context
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.scale(dpr, dpr);
 }
 
-// Call on load, resize, and rotation
+// Run on load, resize, rotation
 window.addEventListener("load", resizeCanvas);
 window.addEventListener("resize", resizeCanvas);
 window.addEventListener("orientationchange", resizeCanvas);
@@ -1413,6 +1411,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
