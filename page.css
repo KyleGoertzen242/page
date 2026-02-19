@@ -87,14 +87,17 @@ body {
    CANVAS SECTION
 ========================= */
 #game {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 2 / 1;   /* keeps your 800x400 ratio */
-    max-height: 70vh;
-    border-radius: 20px;
     display: block;
-    margin: 0 auto;
+    margin: 20px auto;
+    border: 5px solid #fff;
+    border-radius: 20px;
+    box-shadow: 0 0 40px rgba(255,255,255,0.6), 0 0 20px #aaa inset;
+    background: linear-gradient(to bottom, #f9f9f9, #e0e0e0);
+    width: 95%;        /* responsive width */
+    max-width: 1200px; /* optional max width */
+    height: auto;      /* auto height keeps aspect ratio */
 }
+
 
 /* =========================
    SIDEBAR / UI
@@ -164,4 +167,5 @@ input, textarea {
         max-height: 50vh;
     }
 }
+
 
