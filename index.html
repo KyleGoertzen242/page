@@ -120,6 +120,15 @@ footer a:hover {
 }
 
 /* Ads */
+/* Parent wrapper */
+#ads {
+    position: relative;
+    width: 20vw;         /* controls ad size */
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* All ad containers */
 #ad-container,
 #second-ad-container,
 #third-ad-container,
@@ -127,12 +136,13 @@ footer a:hover {
 #fifth-ad-container,
 #sixth-ad-container,
 #seventh-ad-container {
-    width: 100%;
-    max-width: 20vw; /* responsive width */
-    margin: 1vw auto;
     position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
 }
 
+/* Images */
 #ad-container img,
 #second-ad-container img,
 #third-ad-container img,
@@ -146,6 +156,7 @@ footer a:hover {
     transition: opacity 0.2s ease-in-out;
 }
 
+/* Active states */
 #ad-container img.active,
 #second-ad-container img.secondactive,
 #third-ad-container img.thirdactive,
@@ -157,12 +168,6 @@ footer a:hover {
     z-index: 1;
 }
 
-#ads {
-    display: flex;
-    flex-direction: column;
-    gap: 2vw;
-    align-items: center;
-}
 
 /* Messages & Colored Blocks */
 .message {
@@ -1567,6 +1572,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
