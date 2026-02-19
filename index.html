@@ -258,30 +258,6 @@ let isAuthReady = false;
 let isSavingBlocked = false;
 const ctx = canvas.getContext("2d");
 
-function resizeCanvas() {
-    const dpr = window.devicePixelRatio || 1;
-
-    // Desired displayed width and height based on CSS
-    const width = canvas.clientWidth;
-    const height = width / 2; // maintain 800:400 ratio
-
-    canvas.style.height = height + "px";
-
-    // Set actual pixel size for sharp rendering
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
-
-    // Reset and scale context
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.scale(dpr, dpr);
-}
-
-// Call on load, resize, and rotation
-window.addEventListener("load", resizeCanvas);
-window.addEventListener("resize", resizeCanvas);
-window.addEventListener("orientationchange", resizeCanvas);
-
-
 
 /* ================= MOBILE INPUT ================= */
 
@@ -1411,6 +1387,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
