@@ -230,19 +230,7 @@ paypal.Buttons({
 	};
 </script>
 
-<canvas 
-    id="game" 
-    width="800" 
-    height="400" 
-    style="
-        border: 5px solid #fff;
-        border-radius: 20px;
-        box-shadow: 0 0 40px rgba(255,255,255,0.6), 0 0 20px #aaa inset;
-        background: linear-gradient(to bottom, #f9f9f9, #e0e0e0);
-        display: block;
-        margin: 50px auto;
-    ">
-</canvas>
+<canvas id="game" width="800" height="400"></canvas>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
@@ -270,18 +258,32 @@ let isAuthReady = false;
 let isSavingBlocked = false;
 const ctx = canvas.getContext("2d");
 
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
 function resizeCanvas() {
     const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
 
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
+    // Desired displayed width and height based on CSS
+    const width = canvas.clientWidth;
+    const height = width / 2; // maintain 800:400 ratio
 
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    canvas.style.height = height + "px";
+
+    // Set actual pixel size for sharp rendering
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+
+    // Reset and scale context
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
 }
 
+// Call on load, resize, and rotation
+window.addEventListener("load", resizeCanvas);
 window.addEventListener("resize", resizeCanvas);
-resizeCanvas();
+window.addEventListener("orientationchange", resizeCanvas);
+
 
 /* ================= MOBILE INPUT ================= */
 
@@ -1411,6 +1413,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
