@@ -1,585 +1,165 @@
-/* Reset some default styles */
+/* =========================
+   RESET
+========================= */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Arial', sans-serif;
+    font-family: Arial, sans-serif;
 }
 
-/* Body background */
+html, body {
+    height: 100%;
+}
+
 body {
-    background-color: #f5f6fa;
+    background: #f5f6fa;
     color: #2f3640;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* prevent page scroll */
 }
 
-
-/* Mobile-first (default) styles */
-
-/* Header */
+/* =========================
+   HEADER
+========================= */
 #fcf-header {
+    flex-shrink: 0;
+    background: #fff;
+    padding: 14px 20px;
     display: flex;
-    flex-direction: row; /* better for full-width header content */
-    justify-content: space-between; /* spreads items across the header */
-    align-items: center;
-    padding: 12px 0; /* remove horizontal padding to truly fill screen */
-    margin: 0; /* remove any default margins */
-    width: 100vw; /* full viewport width */
-    background-color: #ffffff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    gap: 16px;
-    box-sizing: border-box; /* ensures padding/gap doesn’t overflow */
-}
-
-.fcf-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.fcf-logo {
-    width: 40px;
-    height: 40px;
-}
-
-.fcf-title {
-    font-weight: bold;
-    font-size: 1.4rem;
-    color: #2f3640;
+    justify-content: flex-end;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
 .fcf-nav {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
+    gap: 20px;
 }
 
 .fcf-nav a {
     text-decoration: none;
     color: #2f3640;
     font-weight: 500;
-    transition: color 0.2s;
 }
 
 .fcf-nav a:hover {
     color: #e1306c;
 }
 
-/* Layout */
+/* =========================
+   MAIN APP LAYOUT
+========================= */
 #layout {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 16px;
-    gap: 20px;
+    overflow: hidden;
 }
 
 #main-layout {
-    display: flex;
-    flex-direction: column;
+    flex: 1;
+    display: grid;
+    grid-template-columns: 260px 1fr 300px;
     gap: 20px;
+    padding: 20px;
+    overflow: hidden;
 }
 
-/* Chat & Messages */
+/* =========================
+   CHAT COLUMN
+========================= */
 #chatList {
-    max-height: 400px;
     overflow-y: auto;
+    background: #fff;
     border-radius: 8px;
-}
-
-#chatList div:hover {
-    background-color: #f1f2f6;
+    padding: 10px;
 }
 
 #messages {
-    background-color: #ffffff;
-    padding: 10px;
-    border-radius: 8px;
-    height: 250px;
     overflow-y: auto;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: #fff;
+    border-radius: 8px;
+    padding: 10px;
 }
 
-/* Buttons */
-#sendBtn, #googleLogin, #logout {
-    background-color: #e1306c;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-#sendBtn:hover, #googleLogin:hover, #logout:hover {
-    background-color: #c91f5a;
-}
-
-/* Inputs */
-input, textarea {
+/* =========================
+   CANVAS SECTION
+========================= */
+canvas {
     width: 100%;
-    padding: 8px 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
-    font-size: 1rem;
+    height: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 20px;
+    display: block;
 }
 
-textarea {
-    resize: vertical;
+/* Canvas container behavior */
+#game {
+    width: 100%;
+    height: auto;
+    max-height: 60vh;
+    display: block;
+    margin: 0 auto;
 }
 
-/* Inventory & UI Panels */
+/* =========================
+   SIDEBAR / UI
+========================= */
 #ui {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    overflow-y: auto;
 }
 
-#inventoryBox, #equippedBox {
-    background-color: #fff;
-    padding: 12px;
+#inventoryBox,
+#equippedBox,
+#leaderboard,
+#textdiv {
+    background: #fff;
+    padding: 14px;
     border-radius: 8px;
-    flex: 1;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
 }
 
-#inventoryList div, #equippedList div {
-    padding: 6px;
-    margin: 4px 0;
-    background-color: #f1f2f6;
+/* =========================
+   BUTTONS
+========================= */
+button {
+    background: #e1306c;
+    color: white;
+    border: none;
+    padding: 8px 14px;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s;
 }
 
-#inventoryList div:hover, #equippedList div:hover {
-    background-color: #dcdde1;
+button:hover {
+    background: #c91f5a;
 }
 
-/* Leaderboard */
-#leaderboard {
-    background-color: #fff;
-    padding: 12px;
-    border-radius: 8px;
-    margin-top: 20px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+/* =========================
+   INPUTS
+========================= */
+input, textarea {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
 }
 
-/* Amazon Link Text */
-#textdiv {
-    margin-top: 20px;
-    padding: 12px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-#textdiv a {
-    font-weight: bold;
-    color: #e1306c;
-}
-
-/* Color text */
-.colort {
-    margin-top: 10px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #2f3640;
-}
-
-/* Tablet: min-width 600px */
-@media (min-width: 600px) {
-    #fcf-header {
-        display: flex;
-        flex-direction: row; /* better for full-width header content */
-        justify-content: space-between; /* spreads items across the header */
-        align-items: center;
-        padding: 12px 0; /* remove horizontal padding to truly fill screen */
-        margin: 0; /* remove any default margins */
-        width: 100vw; /* full viewport width */
-        background-color: #ffffff;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        gap: 16px;
-        box-sizing: border-box; /* ensures padding/gap doesn’t overflow */
-    }
-
-    .fcf-left {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .fcf-logo {
-        width: 40px;
-        height: 40px;
-    }
-
-    .fcf-title {
-        font-weight: bold;
-        font-size: 1.4rem;
-        color: #2f3640;
-    }
-
-    .fcf-nav {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 12px;
-    }
-
-    .fcf-nav a {
-        text-decoration: none;
-        color: #2f3640;
-        font-weight: 500;
-        transition: color 0.2s;
-    }
-
-    .fcf-nav a:hover {
-        color: #e1306c;
-    }
-
-    #layout {
-        display: flex;
-        flex-direction: column;
-        padding: 16px;
-        gap: 20px;
-    }
-
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 1100px) {
     #main-layout {
-        display: flex;
-        flex-direction: row;
-        gap: 20px;
-    }
-
-    #chatList {
-        max-height: 500px;
+        grid-template-columns: 1fr;
         overflow-y: auto;
-        border-radius: 8px;
     }
 
-    #messages {
-        background-color: #ffffff;
-        padding: 10px;
-        border-radius: 8px;
-        height: 300px;
-        overflow-y: auto;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    #ui {
-        display: flex;
-        flex-direction: row;
-        gap: 20px;
-    }
-
-    #inventoryBox, #equippedBox {
-        background-color: #fff;
-        padding: 12px;
-        border-radius: 8px;
-        flex: 1;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    canvas {
+        max-height: 50vh;
     }
 }
-
-/* Desktop: min-width 1024px */
-@media (min-width: 400px) {
-    #fcf-header {
-        display: flex;
-        flex-direction: row; /* better for full-width header content */
-        justify-content: space-between; /* spreads items across the header */
-        align-items: center;
-        padding: 12px 0; /* remove horizontal padding to truly fill screen */
-        margin: 0; /* remove any default margins */
-        width: 100vw; /* full viewport width */
-        background-color: #ffffff;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        gap: 16px;
-        box-sizing: border-box; /* ensures padding/gap doesn’t overflow */
-    }
-
-    .fcf-left {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .fcf-logo {
-        width: 40px;
-        height: 40px;
-    }
-
-    .fcf-title {
-        font-weight: bold;
-        font-size: 1.6rem;
-        color: #2f3640;
-    }
-
-    .fcf-nav {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 12px;
-    }
-
-    .fcf-nav a {
-        text-decoration: none;
-        color: #2f3640;
-        font-weight: 500;
-        transition: color 0.2s;
-    }
-
-    .fcf-nav a:hover {
-        color: #e1306c;
-    }
-
-    #layout {
-        display: flex;
-        flex-direction: column;
-        padding: 16px;
-        gap: 20px;
-    }
-
-    #main-layout {
-        display: flex;
-        flex-direction: row;
-        gap: 20px;
-    }
-
-    #chatList {
-        max-height: 600px;
-        overflow-y: auto;
-        border-radius: 8px;
-    }
-
-    #messages {
-        background-color: #ffffff;
-        padding: 10px;
-        border-radius: 8px;
-        height: 400px;
-        overflow-y: auto;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    #ui {
-        display: flex;
-        flex-direction: row;
-        gap: 20px;
-    }
-
-    #inventoryBox, #equippedBox {
-        background-color: #fff;
-        padding: 12px;
-        border-radius: 8px;
-        flex: 1;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-}
-
-/* Desktop: min-width 1024px */
-@media (min-width: 200px) {
-    #fcf-header {
-        display: flex;
-        flex-direction: row; /* better for full-width header content */
-        justify-content: space-between; /* spreads items across the header */
-        align-items: center;
-        padding: 12px 0; /* remove horizontal padding to truly fill screen */
-        margin: 0; /* remove any default margins */
-        width: 100vw; /* full viewport width */
-        background-color: #ffffff;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        gap: 16px;
-        box-sizing: border-box; /* ensures padding/gap doesn’t overflow */
-    }
-
-    .fcf-left {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .fcf-logo {
-        width: 40px;
-        height: 40px;
-    }
-
-    .fcf-title {
-        font-weight: bold;
-        font-size: 1.6rem;
-        color: #2f3640;
-    }
-
-    .fcf-nav {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 12px;
-    }
-
-    .fcf-nav a {
-        text-decoration: none;
-        color: #2f3640;
-        font-weight: 500;
-        transition: color 0.2s;
-    }
-
-    .fcf-nav a:hover {
-        color: #e1306c;
-    }
-
-    #layout {
-        display: flex;
-        flex-direction: column;
-        padding: 16px;
-        gap: 20px;
-    }
-
-    #main-layout {
-        display: flex;
-        flex-direction: row;
-        gap: 20px;
-    }
-
-    #chatList {
-        max-height: 600px;
-        overflow-y: auto;
-        border-radius: 8px;
-    }
-
-    #messages {
-        background-color: #ffffff;
-        padding: 10px;
-        border-radius: 8px;
-        height: 400px;
-        overflow-y: auto;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    #ui {
-        display: flex;
-        flex-direction: row;
-        gap: 20px;
-    }
-
-    #inventoryBox, #equippedBox {
-        background-color: #fff;
-        padding: 12px;
-        border-radius: 8px;
-        flex: 1;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-}
-
-/* Desktop: min-width 1024px */
-@media (min-width: 1024px) {
-    #fcf-header {
-        display: flex;
-        flex-direction: row; /* better for full-width header content */
-        justify-content: space-between; /* spreads items across the header */
-        align-items: center;
-        padding: 12px 0; /* remove horizontal padding to truly fill screen */
-        margin: 0; /* remove any default margins */
-        width: 100vw; /* full viewport width */
-        background-color: #ffffff;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        gap: 16px;
-        box-sizing: border-box; /* ensures padding/gap doesn’t overflow */
-    }
-
-    .fcf-left {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .fcf-logo {
-        width: 40px;
-        height: 40px;
-    }
-
-    .fcf-title {
-        font-weight: bold;
-        font-size: 1.6rem;
-        color: #2f3640;
-    }
-
-    .fcf-nav {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 12px;
-    }
-
-    .fcf-nav a {
-        text-decoration: none;
-        color: #2f3640;
-        font-weight: 500;
-        transition: color 0.2s;
-    }
-
-    .fcf-nav a:hover {
-        color: #e1306c;
-    }
-
-    #layout {
-        display: flex;
-        flex-direction: column;
-        padding: 16px;
-        gap: 20px;
-    }
-
-    #main-layout {
-        display: flex;
-        flex-direction: row;
-        gap: 20px;
-    }
-
-    #chatList {
-        max-height: 600px;
-        overflow-y: auto;
-        border-radius: 8px;
-    }
-
-    #messages {
-        background-color: #ffffff;
-        padding: 10px;
-        border-radius: 8px;
-        height: 400px;
-        overflow-y: auto;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    #ui {
-        display: flex;
-        flex-direction: row;
-        gap: 20px;
-    }
-
-    #inventoryBox, #equippedBox {
-        background-color: #fff;
-        padding: 12px;
-        border-radius: 8px;
-        flex: 1;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-}
-
-
-
-
-
-
