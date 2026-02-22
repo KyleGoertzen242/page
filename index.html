@@ -138,7 +138,6 @@ footer a:hover {
 #third-ad-container,
 #fourth-ad-container,
 #fifth-ad-container,
-#sixth-ad-container,
 #seventh-ad-container {
     position: relative;  /* STACK THEM */
     top: 0;
@@ -155,7 +154,6 @@ footer a:hover {
 #third-ad-container img,
 #fourth-ad-container img,
 #fifth-ad-container img,
-#sixth-ad-container img,
 #seventh-ad-container img {
     position: absolute;  /* KEY */
     top: 0;
@@ -175,7 +173,6 @@ footer a:hover {
 #third-ad-container img.thirdactive,
 #fourth-ad-container img.fourthactive,
 #fifth-ad-container img.fifthactive,
-#sixth-ad-container img.sixthactive,
 #seventh-ad-container img.seventhactive {
     opacity: 1;
     z-index: 10;
@@ -1308,23 +1305,6 @@ onAuthStateChanged(auth, user => {
             }, 1000);
         </script>
 
-		<div id="sixth-ad-container">
-            <img src="image16.png" class="sixthactive" alt="Ad 16">
-            <img src="image17.png" alt="Ad 17">
-            <img src="image18.png" alt="Ad 18">
-        </div>
-            
-        <script>
-            const sixthimages = document.querySelectorAll('#sixth-ad-container img');
-            let sixthcurrent = 0;
-        
-            setInterval(() => {
-                sixthimages[sixthcurrent].classList.remove('sixthactive');
-                sixthcurrent = (sixthcurrent + 1) % sixthimages.length;
-                sixthimages[sixthcurrent].classList.add('sixthactive');
-            }, 1000);
-        </script>
-
 		<div id="seventh-ad-container">
             <img src="Screenshot_20260117-180705.png" class="seventhactive" alt="Ad 19">
             <img src="Screenshot_20260117-180709.png" alt="Ad 20">
@@ -1354,12 +1334,6 @@ onAuthStateChanged(auth, user => {
 		
         <a href="https://www.friendcodeforum.com/" target="_blank" style="text-decoration: none; color: #E1306C; font-weight: bold; font-family: Arial, sans-serif;">
           https://www.friendcodeforum.com/ Send e-transfer to kgoertzen14@gmail.com in Canada 🇨🇦 
-        </a>
-        
-        <br>
-		
-        <a href="https://www.instagram.com/yugioholdhead/" target="_blank" style="text-decoration: none; color: #E1306C; font-weight: bold; font-family: Arial, sans-serif;">
-          https://www.instagram.com/yugioholdhead/ YuGiOhOldHead Yu-Gi-Oh! Content and Auctions daily based out of France 
         </a>
 
 		<br>
@@ -1586,6 +1560,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
