@@ -194,16 +194,17 @@ footer a:hover {
 /* Canvas */
 #game {
     width: 100%;
-    height: 100vh; /* Full height of the viewport */
-    max-width: 100%;
+    max-width: 900px;      /* prevents it from being too huge on desktop */
+    aspect-ratio: 16 / 9;  /* change to your game’s real ratio */
     display: block;
-    margin: 0 auto;
-    border: 0.5vw solid #fff;
-    border-radius: 2vw;
-    box-shadow: 0 0 4vw rgba(255,255,255,0.6), 0 0 2vw #aaa inset;
+    margin: 2vw auto;
+
+    border: 6px solid #fff;
+    border-radius: 16px;
+    box-shadow: 0 0 40px rgba(255,255,255,0.6),
+                inset 0 0 20px #aaa;
+
     background: linear-gradient(to bottom, #f9f9f9, #e0e0e0);
-    object-fit: contain; /* Keeps proportions */
-    position: relative;
 }
 
 /* Prevent horizontal scroll */
@@ -231,20 +232,6 @@ html, body {
 
     .colort {
         padding: 4vw;
-    }
-}
-
-/* Landscape mode: when width is greater than height */
-@media (orientation: landscape) {
-    #game {
-        height: 70vh;  /* Reduce the height in landscape mode */
-    }
-}
-
-/* Portrait mode: when height is greater than width */
-@media (orientation: portrait) {
-    #game {
-        height: 100vh;  /* Full height in portrait mode */
     }
 }
 
@@ -408,19 +395,7 @@ paypal.Buttons({
 	};
 </script>
 
-<canvas 
-    id="game" 
-    width="800" 
-    height="400" 
-    style="
-        border: 5px solid #fff;
-        border-radius: 20px;
-        box-shadow: 0 0 40px rgba(255,255,255,0.6), 0 0 20px #aaa inset;
-        background: linear-gradient(to bottom, #f9f9f9, #e0e0e0);
-        display: block;
-        margin: 50px auto;
-    ">
-</canvas>
+<canvas id="game" width="1280" height="720"></canvas>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
@@ -1536,6 +1511,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
