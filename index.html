@@ -191,40 +191,6 @@ footer a:hover {
     box-sizing: border-box;
 }
 
-/* =========================
-   GAME CANVAS FIX (FULLY RESPONSIVE)
-========================= */
-
-#game {
-    display: block;
-    margin: 0 auto;
-    border: 6px solid #fff;
-    border-radius: 16px;
-    box-shadow: 0 0 40px rgba(255,255,255,0.6),
-                inset 0 0 20px #aaa;
-    background: linear-gradient(to bottom, #f9f9f9, #e0e0e0);
-}
-
-/* LANDSCAPE (desktop + rotated phones) */
-@media (orientation: landscape) {
-    #game {
-        width: 100%;
-        max-width: 900px;
-        height: auto;
-        aspect-ratio: 16 / 9;
-    }
-}
-
-/* PORTRAIT (upright phones) */
-@media (orientation: portrait) {
-    #game {
-        height: 92vh;   /* fills almost entire phone height */
-        width: auto;
-        max-width: 100%;
-        aspect-ratio: 16 / 9;
-    }
-}
-
 /* Prevent horizontal scroll */
 html, body {
     width: 100%;
@@ -1529,6 +1495,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
