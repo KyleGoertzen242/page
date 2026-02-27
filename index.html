@@ -175,6 +175,34 @@ footer a:hover {
     z-index: 10;
 }
 
+/* =========================
+   PERFECT MOBILE GAME SCALING
+========================= */
+
+#game {
+    display: block;
+    margin: 0 auto;
+
+    /* Keep real game ratio */
+    aspect-ratio: 1280 / 720;
+
+    /* Always fit inside screen */
+    width: 100vw;
+    height: 100vh;
+
+    /* Prevent distortion */
+    max-width: 100vw;
+    max-height: 100vh;
+
+    /* Styling */
+    border: 6px solid #fff;
+    border-radius: 16px;
+    box-shadow: 0 0 40px rgba(255,255,255,0.6),
+                inset 0 0 20px #aaa;
+
+    background: linear-gradient(to bottom, #f9f9f9, #e0e0e0);
+}
+
 /* Messages & Colored Blocks */
 .message {
     margin-top: 1vw;
@@ -1495,6 +1523,7 @@ if __name__ == "__main__":
 
 </body>
 </html>
+
 
 
 
