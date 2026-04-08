@@ -433,8 +433,6 @@ window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
 
-/* ================= MOBILE INPUT ================= */
-
 let buttons = {};
 
 function updateButtons() {
@@ -448,25 +446,26 @@ function updateButtons() {
 updateButtons();
 window.addEventListener("resize", updateButtons);
 
-function handleTouch(e, down) {
+function handleTouch(e) {
   const rect = canvas.getBoundingClientRect();
-
-  const offsetX = window.scrollX;
-  const offsetY = window.scrollY;
 
   const scaleX = BASE_WIDTH / rect.width;
   const scaleY = BASE_HEIGHT / rect.height;
 
+  // Reset all keys first
+  Object.values(buttons).forEach(b => keys[b.key] = false);
+
+  // Handle all active touches
   for (const t of e.touches) {
-    const x = (t.clientX - rect.left - offsetX) * scaleX;
-	const y = (t.clientY - rect.top - offsetY) * scaleY;
+    const x = (t.clientX - rect.left) * scaleX;
+    const y = (t.clientY - rect.top) * scaleY;
 
     Object.values(buttons).forEach(b => {
       if (
         x > b.x && x < b.x + b.w &&
         y > b.y && y < b.y + b.h
       ) {
-        keys[b.key] = down;
+        keys[b.key] = true;
       }
     });
   }
@@ -475,13 +474,17 @@ function handleTouch(e, down) {
 // Touch listeners
 canvas.addEventListener("touchstart", e => {
   e.preventDefault();
-  handleTouch(e, true);
+  handleTouch(e);
 });
 
-// On touchend, **clear all button keys** so character stops moving
+canvas.addEventListener("touchmove", e => {
+  e.preventDefault();
+  handleTouch(e);
+});
+
 canvas.addEventListener("touchend", e => {
   e.preventDefault();
-  Object.values(buttons).forEach(b => keys[b.key] = false);
+  handleTouch(e);
 });
 
 
