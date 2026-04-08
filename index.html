@@ -415,18 +415,16 @@ const ctx = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = false;
 
 function resizeCanvas() {
-    const rect = canvas.parentElement.getBoundingClientRect();
+  const maxWidth = window.innerWidth;
+  const maxHeight = window.innerHeight;
 
-    const scale = Math.min(
-        rect.width / BASE_WIDTH,
-        window.innerHeight / BASE_HEIGHT
-    );
+  const scale = Math.min(
+    maxWidth / BASE_WIDTH,
+    maxHeight / BASE_HEIGHT
+  );
 
-    const displayWidth = BASE_WIDTH * scale;
-    const displayHeight = BASE_HEIGHT * scale;
-
-    canvas.style.width = displayWidth + "px";
-    canvas.style.height = displayHeight + "px";
+  canvas.style.width = (BASE_WIDTH * scale) + "px";
+  canvas.style.height = (BASE_HEIGHT * scale) + "px";
 }
 
 window.addEventListener("resize", resizeCanvas);
@@ -471,21 +469,21 @@ function handleTouch(e) {
   }
 }
 
-// Touch listeners
 canvas.addEventListener("touchstart", e => {
   e.preventDefault();
   handleTouch(e);
-});
+}, { passive: false });
 
 canvas.addEventListener("touchmove", e => {
   e.preventDefault();
   handleTouch(e);
-});
+}, { passive: false });
 
 canvas.addEventListener("touchend", e => {
   e.preventDefault();
-  handleTouch(e);
-});
+  // clear all keys on release
+  Object.values(buttons).forEach(b => keys[b.key] = false);
+}, { passive: false });
 
 
 
@@ -989,14 +987,6 @@ function drawUI() {
 
 // ------------------ LOOP ------------------
 function loop() {
-  ctx.setTransform(
-	canvas.clientWidth / BASE_WIDTH,
-	0,
-	0,
-	canvas.clientHeight / BASE_HEIGHT,
-	0,
-    0
-  );
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBackground();
   update();
