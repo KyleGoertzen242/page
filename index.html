@@ -897,7 +897,7 @@ function drawPlayer() {
     const hat = player.equipped.hat; if (!hat) return;
     const off = hatOffsets[hat.id]; if (!off) return;
 	if (facingLeft) {
-		ctx.drawImage(itemSprites[hat.id], -off.x, off.y, off.w, off.h);
+		ctx.drawImage(itemSprites[hat.id], -off.x+11, off.y, off.w, off.h);
 	} else {
 		if (hat.id === 'jousting_helmet') {
 			ctx.drawImage(itemSprites[hat.id], off.x-65, off.y, off.w, off.h);
