@@ -518,8 +518,8 @@ itemSprites.fish.src = "fish.png";
 itemSprites.jousting_helmet.src = "jousting_helmet_maplestory_warrior.png";
 
 const hatOffsets = {
-  hat: { x: -10, y: -20, w: 25, h: 40 },
-  blue_hat: { x: -10, y: -20, w: 25, h: 40 },
+  hat: { x: 0, y: -20, w: 25, h: 40 },
+  blue_hat: { x: 0, y: -20, w: 25, h: 40 },
   jousting_helmet: {x:5, y:5, w:65, h:45}
 };
 
@@ -546,8 +546,7 @@ const expPopups = []; // {x, y, text, alpha}
 const waterZone = { x: 400, y: 300, width: 200, height: 80 };
 const items = [
   { id: "blue_hat", name: "Blue Hat", x: 650, y: 300, size: 20 },
-  { id: "rod", name: "Fishing Rod", x: 300, y: 300, size: 20 },
-  { id: "jousting_helmet", name: "Jousting Helmet", x: 620, y: 300, size: 30 }
+  { id: "rod", name: "Fishing Rod", x: 300, y: 300, size: 20 }
 ];
 
 const hasItem = id => player.inventory.some(i => i.id === id);
