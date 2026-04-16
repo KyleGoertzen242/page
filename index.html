@@ -398,11 +398,23 @@ document.getElementById("googleLogin").onclick = async () => {
 
 // 💰 TRANSFER
 document.getElementById("sendCoins").onclick = async () => {
-  const receiverEmail = document.getElementById("receiverEmail").value;
-  const amount = Number(document.getElementById("amount").value);
+  const receiverEmail = document.getElementById("receiverEmail").value.trim();
+  const amountInput = document.getElementById("amount").value;
 
-  if (!receiverEmail || !amount || amount <= 0) {
-    alert("Enter valid email and amount");
+  if (!receiverEmail) {
+    alert("Enter receiver email");
+    return;
+  }
+
+  if (amountInput === "") {
+    alert("Enter coin amount");
+    return;
+  }
+
+  const amount = Number(amountInput);
+
+  if (isNaN(amount) || amount <= 0) {
+    alert("Enter a valid coin amount");
     return;
   }
 
