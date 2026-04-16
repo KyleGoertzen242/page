@@ -321,6 +321,8 @@ paypal.Buttons({
 	import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 	import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 	import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+	import { getDocs, collection, query, where, runTransaction } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
 	const firebaseConfig = {
 		apiKey: "AIzaSyBrZTwbNcyZRIUaPXa1tuksDw3mwTI7E_o",
 		authDomain: "friendcodeforum-fe84c.firebaseapp.com",
@@ -335,6 +337,12 @@ paypal.Buttons({
 	const db = getFirestore(app);
 	const provider = new GoogleAuthProvider();
 
+	let currenUser = null;
+
+	onAuthStateChanged(auth, user => {
+      currentUser = user;
+	});
+	
 	document.getElementById("googleLogin").onclick = async () => {
 	  try {
 	    const result = await signInWithPopup(auth, provider);
@@ -359,16 +367,79 @@ paypal.Buttons({
 	  }
 	};
 
+document.getElementById("sendCoins").onclick = async () => {
+  const receiverEmail = document.getElementById("receiverEmail").value;
+  const amount = Number(document.getElementById("amount").value);
+
+  if (!receiverEmail || !amount || amount <= 0) {
+    alert("Enter valid email and amount");
+    return;
+  }
+
+  if (!currentUser) {
+    alert("Not logged in");
+    return;
+  }
+
+  try {
+    // 🔎 find receiver by email
+    const q = query(
+      collection(db, "users"),
+      where("email", "==", receiverEmail)
+    );
+
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      alert("User not found");
+      return;
+    }
+
+    const receiverDoc = snap.docs[0];
+
+    const senderRef = doc(db, "users", currentUser.uid);
+    const receiverRef = doc(db, "users", receiverDoc.id);
+
+    // 🔒 SAFE transaction
+    await runTransaction(db, async (tx) => {
+      const senderSnap = await tx.get(senderRef);
+      const receiverSnap = await tx.get(receiverRef);
+
+      const senderCoins = senderSnap.data()?.coins ?? 0;
+      const receiverCoins = receiverSnap.data()?.coins ?? 0;
+
+      if (senderCoins < amount) {
+        throw "Not enough coins";
+      }
+
+      tx.update(senderRef, {
+        coins: senderCoins - amount
+      });
+
+      tx.update(receiverRef, {
+        coins: receiverCoins + amount
+      });
+    });
+
+    alert("Transfer successful!");
+  } catch (err) {
+    alert("Transfer failed: " + err);
+  }
+};
+
 </script>
 	
 <div id="message"></div>
+
+<input id="receiverEmail" placeholder="Receiver email" />
+<input id="amount" type="number" placeholder="Coins" />
+
+<button id="sendCoins">Send Coins</button>
 	
 <button id="logout">Logout</button>
 
 <script type="module">
-	import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-
-	const auth = getAuth();
+	import { signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
 	document.getElementById("logout").onclick = () => {
 		signOut(auth).then(() => {
