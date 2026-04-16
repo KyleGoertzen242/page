@@ -321,7 +321,7 @@ paypal.Buttons({
 <div id="message"></div>
 
 <input id="receiverEmail" placeholder="Receiver email" />
-<input id="amount" type="number" placeholder="Coins" />
+<input id="amount" type="number" min="1" step="1" />
 
 <button id="sendCoins">Send Coins</button>
 
@@ -399,17 +399,19 @@ document.getElementById("googleLogin").onclick = async () => {
 // 💰 TRANSFER
 document.getElementById("sendCoins").onclick = async () => {
   const receiverEmail = document.getElementById("receiverEmail").value.trim();
-  const amountInput = document.getElementById("amount").value;
+  
+  const amountInput = document.getElementById("amount").value.trim();
+
+  // Force strict numeric conversion
+  const amount = parseFloat(amountInput);
+
+  if (!Number.isFinite(amount) || amount <= 0) {
+    alert("Enter a valid coin amount");
+	return; 
+  }
 
   if (!receiverEmail) {
     alert("Enter receiver email");
-    return;
-  }
-
-  const amount = Number(amountInput);
-
-  if (isNaN(amount) || amount <= 0) {
-    alert("Enter a valid coin amount");
     return;
   }
 
