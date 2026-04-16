@@ -399,7 +399,7 @@ document.getElementById("googleLogin").onclick = async () => {
 // 💰 TRANSFER
 document.getElementById("sendCoins").onclick = async () => {
   const receiverEmail = document.getElementById("receiverEmail").value.trim();
-  const amountInput = document.getElementById("amount").value.trim();
+  const amountInput = document.getElementById("amount")?.value;
 
   if (!receiverEmail) {
     alert("Enter receiver email");
