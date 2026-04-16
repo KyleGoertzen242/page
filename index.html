@@ -439,8 +439,8 @@ document.getElementById("sendCoins").onclick = async () => {
 <button id="logout">Logout</button>
 
 <script type="module">
-	import { signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-
+	import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+    const auth = getAuth();
 	document.getElementById("logout").onclick = () => {
 		signOut(auth).then(() => {
 			window.location.href = "/";
