@@ -317,56 +317,86 @@ paypal.Buttons({
 
 
 <button id="googleLogin">Sign in with Google</button>
+
+<div id="message"></div>
+
+<input id="receiverEmail" placeholder="Receiver email" />
+<input id="amount" type="number" placeholder="Coins" />
+
+<button id="sendCoins">Send Coins</button>
+
 <script type="module">
-	import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-	import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-	import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-	import { getDocs, collection, query, where, runTransaction } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 
-	const firebaseConfig = {
-		apiKey: "AIzaSyBrZTwbNcyZRIUaPXa1tuksDw3mwTI7E_o",
-		authDomain: "friendcodeforum-fe84c.firebaseapp.com",
-		projectId: "friendcodeforum-fe84c",
-		storageBucket: "friendcodeforum-fe84c.firebasestorage.app",
-		messagingSenderId: "134978263228",
-		appId: "1:134978263228:web:5e25b25af65f088288d8b9"
-	};
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
-	const app = initializeApp(firebaseConfig);
-	const auth = getAuth(app);
-	const db = getFirestore(app);
-	const provider = new GoogleAuthProvider();
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  getDocs,
+  collection,
+  query,
+  where,
+  runTransaction
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-	let currenUser = null;
+// 🔥 Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyBrZTwbNcyZRIUaPXa1tuksDw3mwTI7E_o",
+  authDomain: "friendcodeforum-fe84c.firebaseapp.com",
+  projectId: "friendcodeforum-fe84c",
+  storageBucket: "friendcodeforum-fe84c.firebasestorage.app",
+  messagingSenderId: "134978263228",
+  appId: "1:134978263228:web:5e25b25af65f088288d8b9"
+};
 
-	onAuthStateChanged(auth, user => {
-      currentUser = user;
-	});
-	
-	document.getElementById("googleLogin").onclick = async () => {
-	  try {
-	    const result = await signInWithPopup(auth, provider);
-	    const user = result.user;
-	    const uid = user.uid;
-	
-	    const userDocRef = doc(db, "users", uid);
-	    const userSnap = await getDoc(userDocRef);
-	
-	    let coin = 0;
-	
-	    if (userSnap.exists()) {
-	      coin = userSnap.data().coins;
-	    }
-	
-	    const messageDiv = document.getElementById("message");
-	    messageDiv.style.color = "green";
-	    messageDiv.textContent = `Welcome, ${user.displayName}! You have ${coin} coins.`;
-	
-	  } catch (err) {
-	    alert("Error: " + err.message);
-	  }
-	};
+// 🔥 Init
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
 
+// ✅ FIXED variable name
+let currentUser = null;
+
+// ✅ FIXED auth listener
+onAuthStateChanged(auth, user => {
+  currentUser = user;
+});
+
+// 🔑 LOGIN
+document.getElementById("googleLogin").onclick = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    const userDocRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userDocRef);
+
+    let coin = 0;
+    if (userSnap.exists()) {
+      coin = userSnap.data()?.coins ?? 0;
+    }
+
+    const messageDiv = document.getElementById("message");
+    if (messageDiv) {
+      messageDiv.style.color = "green";
+      messageDiv.textContent =
+        `Welcome, ${user.displayName}! You have ${coin} coins.`;
+    }
+
+  } catch (err) {
+    alert("Error: " + err.message);
+  }
+};
+
+// 💰 TRANSFER
 document.getElementById("sendCoins").onclick = async () => {
   const receiverEmail = document.getElementById("receiverEmail").value;
   const amount = Number(document.getElementById("amount").value);
@@ -382,7 +412,6 @@ document.getElementById("sendCoins").onclick = async () => {
   }
 
   try {
-    // 🔎 find receiver by email
     const q = query(
       collection(db, "users"),
       where("email", "==", receiverEmail)
@@ -400,7 +429,6 @@ document.getElementById("sendCoins").onclick = async () => {
     const senderRef = doc(db, "users", currentUser.uid);
     const receiverRef = doc(db, "users", receiverDoc.id);
 
-    // 🔒 SAFE transaction
     await runTransaction(db, async (tx) => {
       const senderSnap = await tx.get(senderRef);
       const receiverSnap = await tx.get(receiverRef);
@@ -426,15 +454,11 @@ document.getElementById("sendCoins").onclick = async () => {
     alert("Transfer failed: " + err);
   }
 };
-
 </script>
+
+
 	
 <div id="message"></div>
-
-<input id="receiverEmail" placeholder="Receiver email" />
-<input id="amount" type="number" placeholder="Coins" />
-
-<button id="sendCoins">Send Coins</button>
 	
 <button id="logout">Logout</button>
 
