@@ -402,11 +402,6 @@ document.getElementById("sendCoins").onclick = async () => {
   // better than .value + parseFloat
   const amount = amountInput.valueAsNumber;
 
-  if (!Number.isFinite(amount) || amount <= 0) {
-    alert("Enter a valid coin amount");
-    return;
-  }
-
   if (!receiverEmail) {
     alert("Enter receiver email");
     return;
