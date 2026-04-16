@@ -398,10 +398,9 @@ document.getElementById("googleLogin").onclick = async () => {
 document.getElementById("sendCoins").onclick = async () => {
   const receiverEmail = document.getElementById("receiverEmail").value.trim();
   
-  const amountInput = document.getElementById("amount").value.trim();
-  const amount = Number(amountInput);
+  const amount = Number(document.getElementById("amount").value.trim());
 
-  if (amountInput === "" || !Number.isFinite(amount) || amount <= 0) {
+  if (!Number.isFinite(amount) || amount <= 0) {
     alert("Enter a valid coin amount");
     return;
   }
