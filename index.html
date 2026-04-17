@@ -319,7 +319,7 @@ paypal.Buttons({
 <button id="googleLogin">Sign in with Google</button>
 
 <input id="receiverEmail" placeholder="Receiver email" />
-<input id="amount" type="number" min="1" step="1" />
+<input id="amount" type="number" />
 
 <button id="sendCoins">Send Coins</button>
 
@@ -398,10 +398,11 @@ document.getElementById("googleLogin").onclick = async () => {
 document.getElementById("sendCoins").onclick = async () => {
   const receiverEmail = document.getElementById("receiverEmail").value.trim();
   
-  const amount = Number(document.getElementById("amount").value.trim());
+  const amountInput = document.getElementById("amount").value;
+  const amount = parseInt(amountInput);
 
-  if (!Number.isFinite(amount) || amount <= 0) {
-    alert("Enter a valid coin amount");
+  if (isNaN(amount) || amount <= 0) {
+    alert("Enter a valid coin amount (whole number)");
     return;
   }
 
@@ -412,6 +413,11 @@ document.getElementById("sendCoins").onclick = async () => {
 
   if (!currentUser) {
     alert("Not logged in");
+    return;
+  }
+
+  if (receiverEmail === currentUser.email) {
+    alert("You can't send coins to yourself");
     return;
   }
 
@@ -435,6 +441,9 @@ document.getElementById("sendCoins").onclick = async () => {
 
     await runTransaction(db, async (tx) => {
       const senderSnap = await tx.get(senderRef);
+	  if (!senderSnap.exists()) {
+        throw "Sender account not found";
+      }
       const receiverSnap = await tx.get(receiverRef);
 
       const senderCoins = senderSnap.data()?.coins ?? 0;
@@ -445,11 +454,11 @@ document.getElementById("sendCoins").onclick = async () => {
       }
 
       tx.update(senderRef, {
-        coins: senderCoins - amount
+        coins: Math.floor(senderCoins - amount)
       });
 
       tx.update(receiverRef, {
-        coins: receiverCoins + amount
+        coins: Math.floor(receiverCoins + amount)
       });
     });
 
