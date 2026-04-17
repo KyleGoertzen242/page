@@ -399,7 +399,8 @@ document.getElementById("sendCoins").onclick = async () => {
   const receiverEmail = document.getElementById("receiverEmail").value.trim();
   
   const amount = document.getElementById("amount").valueAsNumber;
-
+  alert("RAW:", document.getElementById("amount").value);
+  alert("NUMBER:", document.getElementById("amount").valueAsNumber);
   if (!Number.isInteger(amount) || amount <= 0) {
     alert("Enter a valid coin amount (whole number)");
     return;
