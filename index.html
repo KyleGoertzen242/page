@@ -398,8 +398,8 @@ document.getElementById("googleLogin").onclick = async () => {
 document.getElementById("sendCoins").onclick = async () => {
   const receiverEmail = document.getElementById("receiverEmail").value.trim();
   
-  const amount = document.getElementById("coinamount").valueAsNumber;
-  if (!Number.isInteger(amount) || amount <= 0) {
+  const amount = document.getElementById("coinamount").value;
+  if (amount <= 0) {
     alert("Enter a valid coin amount (whole number)");
     return;
   }
