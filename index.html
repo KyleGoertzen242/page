@@ -319,7 +319,7 @@ paypal.Buttons({
 <button id="googleLogin">Sign in with Google</button>
 
 <input id="receiverEmail" placeholder="Receiver email" />
-<input id="amount" type="number" />
+<input id="amount" type="number" placeholder="Coins" />
 
 <button id="sendCoins">Send Coins</button>
 
@@ -398,10 +398,9 @@ document.getElementById("googleLogin").onclick = async () => {
 document.getElementById("sendCoins").onclick = async () => {
   const receiverEmail = document.getElementById("receiverEmail").value.trim();
   
-  const amountInput = document.getElementById("amount").value;
-  const amount = parseInt(amountInput);
+  const amount = document.getElementById("amount").valueAsNumber;
 
-  if (isNaN(amount) || amount <= 0) {
+  if (!Number.isInteger(amount) || amount <= 0) {
     alert("Enter a valid coin amount (whole number)");
     return;
   }
