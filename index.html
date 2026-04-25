@@ -8,10 +8,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<style>
 /* =========================
-   FriendCodeForum.com CSS - Fully Responsive
-   ========================= */
-
-/* Reset */
+   GLOBAL RESET + BASE
+========================= */
 * {
     margin: 0;
     padding: 0;
@@ -19,419 +17,9 @@
     font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
-body {
-    background: linear-gradient(180deg, #f6f9fc 0%, #eef3f8 100%);
-    color: #1f2937;
-    line-height: 1.6;
-    font-size: 16px;
-    -webkit-font-smoothing: antialiased;
-}
-
-/* =========================
-   HEADER (SaaS STYLE)
-========================= */
-header {
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    color: #fff;
-    padding: 3vw 2vw;
-    text-align: center;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    border-bottom: 1px solid rgba(255,255,255,0.15);
-}
-
-header h1 {
-    font-size: clamp(1.8rem, 4vw, 3rem);
-    letter-spacing: -0.5px;
-    font-weight: 800;
-}
-
-/* =========================
-   NAV (CLEAN SAAS)
-========================= */
-nav {
-    background: rgba(255,255,255,0.7);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    padding: 0.8rem 0;
-    gap: 0.5rem;
-}
-
-nav a {
-    color: #374151;
-    text-decoration: none;
-    margin: 0.4rem 0.8rem;
-    font-weight: 600;
-    padding: 0.5rem 0.8rem;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-}
-
-nav a:hover {
-    background: #eaffea;
-    color: #16a34a;
-}
-
-/* =========================
-   MAIN CONTAINER
-========================= */
-main {
-    width: 95%;
-    max-width: 1100px;
-    margin: 2rem auto;
-}
-
-/* =========================
-   HIGH CONVERSION BUTTONS
-========================= */
-button,
-.btn {
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    color: white;
-    border: none;
-    padding: 0.9rem 1.4rem;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 700;
-    transition: all 0.2s ease;
-    box-shadow: 0 8px 18px rgba(34,197,94,0.25);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-}
-
-button:hover,
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 25px rgba(34,197,94,0.35);
-}
-
-button:active,
-.btn:active {
-    transform: translateY(0);
-    box-shadow: 0 6px 12px rgba(34,197,94,0.2);
-}
-
-/* Optional secondary button style */
-.btn-secondary {
-    background: #f3f4f6;
-    color: #111827;
-    box-shadow: none;
-}
-
-.btn-secondary:hover {
-    background: #e5e7eb;
-}
-
-/* =========================
-   FORM UX (IMPORTANT FOR CONVERSION)
-========================= */
-input,
-textarea {
-    width: 100%;
-    padding: 0.9rem 1rem;
-    margin: 0.6rem 0 1.2rem 0;
-    border: 1px solid #d1d5db;
-    border-radius: 10px;
-    background: white;
-    transition: all 0.2s ease;
-    font-size: 1rem;
-}
-
-input:focus,
-textarea:focus {
-    outline: none;
-    border-color: #22c55e;
-    box-shadow: 0 0 0 4px rgba(34,197,94,0.15);
-}
-
-label {
-    font-weight: 600;
-    display: block;
-    margin-bottom: 0.4rem;
-    color: #374151;
-}
-
-/* =========================
-   FOOTER (CLEAN)
-========================= */
-footer {
-    background: #111827;
-    color: #d1d5db;
-    text-align: center;
-    padding: 2rem 1rem;
-    margin-top: 3rem;
-}
-
-footer a {
-    color: #22c55e;
-    text-decoration: none;
-}
-
-footer a:hover {
-    text-decoration: underline;
-}
-
-
-
-/* =========================
-   ADS WRAPPER
-========================= */
-#ads {
-    position: relative;
-    width: 20vw;
-    max-width: 100%;
-    margin: 0 auto;
-    aspect-ratio: 4 / 5; /* Adjust the aspect ratio for better scaling */
-}
-
-/* =========================
-   ALL AD CONTAINERS
-========================= */
-#ad-container,
-#second-ad-container,
-#fourth-ad-container,
-#fifth-ad-container,
-#seventh-ad-container {
-    position: relative;  /* STACK THEM */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-
-/* =========================
-   ALL IMAGES (OVERLAP)
-========================= */
-#ad-container img,
-#second-ad-container img,
-#fourth-ad-container img,
-#fifth-ad-container img,
-#seventh-ad-container img {
-    position: absolute;  /* KEY */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* Keeps proportions */
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-}
-
-/* =========================
-   ACTIVE IMAGES
-========================= */
-#ad-container img.active,
-#second-ad-container img.secondactive,
-#fourth-ad-container img.fourthactive,
-#fifth-ad-container img.fifthactive,
-#seventh-ad-container img.seventhactive {
-    opacity: 1;
-    z-index: 10;
-}
-
-
-<style>
-/* =========================
-   FriendCodeForum.com CSS - Fully Responsive
-   ========================= */
-
-/* Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
-    background-color: #f4f6f8;
-    color: #333;
-    line-height: 1.6;
-    font-size: 16px;
-}
-
-/* Header & Navigation */
-header {
-    background-color: #4CAF50;
-    color: #fff;
-    padding: 2vw 2vw;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-header h1 {
-    font-size: 5vw; /* scales with screen width */
-    letter-spacing: 1px;
-}
-
-nav {
-    background-color: #3e8e41;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    padding: 1vw 0;
-}
-
-nav a {
-    color: white;
-    text-decoration: none;
-    margin: 1vw;
-    font-weight: bold;
-    transition: color 0.3s ease;
-}
-
-nav a:hover {
-    color: #c1ffc1;
-}
-
-/* Main Content */
-main {
-    width: 95%;
-    max-width: 1200px;
-    margin: 2vw auto;
-}
-
-/* Buttons */
-button, .btn {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 1.5vw 3vw; /* Adjusted padding for better touch targets */
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-size: 1.2em;
-}
-
-button:hover, .btn:hover {
-    background-color: #45a049;
-}
-
-/* Forms */
-input, textarea {
-    width: 100%;
-    padding: 1vw;
-    margin: 1vw 0 2vw 0;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    resize: vertical;
-}
-
-label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 0.5vw;
-}
-
-/* Footer */
-footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 2vw 1vw;
-}
-
-footer a {
-    color: #4CAF50;
-    text-decoration: none;
-}
-
-footer a:hover {
-    text-decoration: underline;
-}
-
-/* =========================
-   ADS WRAPPER
-========================= */
-#ads {
-    position: relative;
-    width: 20vw;
-    max-width: 100%;
-    margin: 0 auto;
-    aspect-ratio: 4 / 5; /* Adjust the aspect ratio for better scaling */
-}
-
-/* =========================
-   ALL AD CONTAINERS
-========================= */
-#ad-container,
-#second-ad-container,
-#fourth-ad-container,
-#fifth-ad-container,
-#seventh-ad-container {
-    position: relative;  /* STACK THEM */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-
-/* =========================
-   ALL IMAGES (OVERLAP)
-========================= */
-#ad-container img,
-#second-ad-container img,
-#fourth-ad-container img,
-#fifth-ad-container img,
-#seventh-ad-container img {
-    position: absolute;  /* KEY */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* Keeps proportions */
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-}
-
-/* =========================
-   ACTIVE IMAGES
-========================= */
-#ad-container img.active,
-#second-ad-container img.secondactive,
-#fourth-ad-container img.fourthactive,
-#fifth-ad-container img.fifthactive,
-#seventh-ad-container img.seventhactive {
-    opacity: 1;
-    z-index: 10;
-}
-
-/* Messages & Colored Blocks */
-.message {
-    margin-top: 1vw;
-    font-size: 0.9em;
-}
-
-.colort {
-    margin-top: 2vw;
-    width: 100%;
-    background-color: #fafafa;
-    border-radius: 12px;
-    padding: 2vw;
-    border: 1px solid #e5e5e5;
-    box-sizing: border-box;
-}
-
-/* Prevent horizontal scroll */
 html, body {
     width: 100%;
     overflow-x: hidden;
-    overflow-y: auto; /* Allow vertical scroll if needed */
-}
-
-<style>
-
-/* Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
 body {
@@ -443,7 +31,7 @@ body {
 }
 
 /* =========================
-   HEADER (SaaS STYLE)
+   HEADER (MODERN SAAS)
 ========================= */
 header {
     background: linear-gradient(135deg, #22c55e, #16a34a);
@@ -456,12 +44,12 @@ header {
 
 header h1 {
     font-size: clamp(1.8rem, 4vw, 3rem);
-    letter-spacing: -0.5px;
     font-weight: 800;
+    letter-spacing: -0.5px;
 }
 
 /* =========================
-   NAV (CLEAN SAAS)
+   NAVBAR
 ========================= */
 nav {
     background: rgba(255,255,255,0.7);
@@ -470,14 +58,13 @@ nav {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    padding: 0.8rem 0;
     gap: 0.5rem;
+    padding: 0.8rem 0;
 }
 
 nav a {
     color: #374151;
     text-decoration: none;
-    margin: 0.4rem 0.8rem;
     font-weight: 600;
     padding: 0.5rem 0.8rem;
     border-radius: 8px;
@@ -490,7 +77,7 @@ nav a:hover {
 }
 
 /* =========================
-   MAIN CONTAINER
+   LAYOUT
 ========================= */
 main {
     width: 95%;
@@ -499,12 +86,12 @@ main {
 }
 
 /* =========================
-   HIGH CONVERSION BUTTONS
+   BUTTONS
 ========================= */
 button,
 .btn {
     background: linear-gradient(135deg, #22c55e, #16a34a);
-    color: white;
+    color: #fff;
     border: none;
     padding: 0.9rem 1.4rem;
     border-radius: 10px;
@@ -531,7 +118,6 @@ button:active,
     box-shadow: 0 6px 12px rgba(34,197,94,0.2);
 }
 
-/* Optional secondary button style */
 .btn-secondary {
     background: #f3f4f6;
     color: #111827;
@@ -543,18 +129,25 @@ button:active,
 }
 
 /* =========================
-   FORM UX (IMPORTANT FOR CONVERSION)
+   FORMS
 ========================= */
+label {
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    display: block;
+    color: #374151;
+}
+
 input,
 textarea {
     width: 100%;
     padding: 0.9rem 1rem;
-    margin: 0.6rem 0 1.2rem 0;
+    margin: 0.6rem 0 1.2rem;
     border: 1px solid #d1d5db;
     border-radius: 10px;
-    background: white;
-    transition: all 0.2s ease;
+    background: #fff;
     font-size: 1rem;
+    transition: all 0.2s ease;
 }
 
 input:focus,
@@ -564,35 +157,26 @@ textarea:focus {
     box-shadow: 0 0 0 4px rgba(34,197,94,0.15);
 }
 
-label {
-    font-weight: 600;
-    display: block;
-    margin-bottom: 0.4rem;
-    color: #374151;
-}
-
 /* =========================
-   FOOTER (CLEAN)
+   CONTENT BLOCKS
 ========================= */
-footer {
-    background: #111827;
-    color: #d1d5db;
-    text-align: center;
-    padding: 2rem 1rem;
-    margin-top: 3rem;
+.colort {
+    margin-top: 1.5rem;
+    background: #fff;
+    border-radius: 14px;
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
 }
 
-footer a {
-    color: #22c55e;
-    text-decoration: none;
-}
-
-footer a:hover {
-    text-decoration: underline;
+.message {
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: #4b5563;
 }
 
 /* =========================
-   ADS WRAPPER
+   ADS SYSTEM
 ========================= */
 #ads {
     position: relative;
@@ -601,7 +185,6 @@ footer a:hover {
     aspect-ratio: 4 / 5;
 }
 
-/* AD CONTAINERS */
 #ad-container,
 #second-ad-container,
 #fourth-ad-container,
@@ -612,7 +195,6 @@ footer a:hover {
     height: 100%;
 }
 
-/* AD IMAGES */
 #ad-container img,
 #second-ad-container img,
 #fourth-ad-container img,
@@ -628,7 +210,6 @@ footer a:hover {
     transition: opacity 0.35s ease;
 }
 
-/* ACTIVE STATES */
 #ad-container img.active,
 #second-ad-container img.secondactive,
 #fourth-ad-container img.fourthactive,
@@ -638,40 +219,34 @@ footer a:hover {
 }
 
 /* =========================
-   CONTENT BLOCKS
+   FOOTER
 ========================= */
-.message {
-    margin-top: 1rem;
-    font-size: 0.95rem;
-    color: #4b5563;
+footer {
+    background: #111827;
+    color: #d1d5db;
+    text-align: center;
+    padding: 2rem 1rem;
+    margin-top: 3rem;
 }
 
-.colort {
-    margin-top: 1.5rem;
-    width: 100%;
-    background: white;
-    border-radius: 14px;
-    padding: 1.5rem;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+footer a {
+    color: #22c55e;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
 }
 
 /* =========================
-   GLOBAL SAFETY
+   MOBILE TWEAKS
 ========================= */
-html, body {
-    width: 100%;
-    overflow-x: hidden;
-}
-
-/* Mobile adjustments */
 @media (max-width: 480px) {
     header h1 {
         font-size: 7vw;
     }
 
     nav a {
-        margin: 2vw;
         font-size: 4vw;
     }
 
