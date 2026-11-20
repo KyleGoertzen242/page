@@ -304,7 +304,7 @@ footer a:hover {
     
     // Only redirect if user is NOT logged in and not already on the login page
     if (!user && currentPath !== '/page') {
-      window.location.replace("/"); // safer than href
+      window.location.replace("/page"); // safer than href
     }
   });
 </script>
