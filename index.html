@@ -301,11 +301,6 @@ footer a:hover {
   // Auth state listener
   onAuthStateChanged(auth, user => {
     const currentPath = window.location.pathname;
-    
-    // Only redirect if user is NOT logged in and not already on the login page
-    while (1) {
-      window.location.replace("/page"); // safer than href
-    }
   });
 </script>
 
